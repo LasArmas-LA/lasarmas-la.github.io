@@ -29,12 +29,15 @@ img{ max-width:100%; height:auto; display:block; }
 
 /* 画像/動画の上に重ねる文字 */
 .hero-text {
-  background: rgba(0, 0, 0, 0.45); /* 半透明パネル */
-  backdrop-filter: blur(4px);      /* 背景ぼかし（対応ブラウザのみ） */
+  position: absolute;
+  bottom: 20px; /* 下からの距離 */
+  left: 20px;   /* 左からの距離 */
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(4px);
   padding: 16px 20px;
   border-radius: 12px;
-  display: inline-block;
   color: #fff;
+  max-width: 80%;
 }
 
 .hero h1{ font-size:clamp(24px,4vw,40px); line-height:1.2; }
