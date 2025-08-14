@@ -16,7 +16,7 @@ img{ max-width:100%; height:auto; display:block; }
 /* ===== Hero Slider ===== */
 .hero-slider{ margin-top:16px; border-radius:18px; overflow:hidden; }
 .hero-slide{ position:relative; display:block; color:inherit; }
-.hero-slide img{ width:100%; object-fit:cover; max-height:460px; display:block; }
+.hero-slide img{ width:100%; aspect-ratio: 16 / 9; object-fit:cover; display:block; }
 
 /* 画像の上に重ねる文字 */
 .hero-text{
