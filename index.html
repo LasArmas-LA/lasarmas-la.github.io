@@ -62,30 +62,26 @@
           </div>
         </a>
 
-        <!--  Slide 4（歴史ページへ）（動画：10秒。再生中は自動送りを停止→終了で次へ） -->
-        <div class="swiper-slide hero-slide" aria-label="LasArmasRogoVideo">
-          <video class="hero-video"
-                 preload="metadata"
-                 playsinline
-                 muted
-                 src="/assets/video/LasArmas_ロゴモーション.webm"></video>
-          <div class="hero-text">
-            <h1>私たちの功績</h1>
-            <p>私たちの歴史を探索だ</p>
-            <span class="btn">詳しく見る</span>
-          </div>
-        </div>
-
-        <!-- 例：外部リンクにするなら
-        <a class="swiper-slide hero-slide" href="https://x.com/yourteam" target="_blank" rel="noopener" aria-label="公式Xへ">
-          <img src="/assets/img/hero4.jpg" alt="公式X">
-          <div class="hero-text">
-            <h1>Follow Us</h1>
-            <p>最新情報を配信中。</p>
-            <span class="btn">X を開く</span>
-          </div>
-        </a>
-        -->
+<!--  Slide 4（歴史ページへ）（動画：自然再生。再生中は自動送りを停止→終了で次へ） -->
+<a class="swiper-slide hero-slide" href="/history/" aria-label="LasArmasRogoVideo">
+  <video class="hero-video"
+         autoplay
+         muted
+         playsinline
+         preload="metadata"
+         poster="/assets/img/trailer-poster.jpg">
+    <!-- まずはご指定の WebM -->
+    <source src="/assets/video/LasArmas_ロゴモーション.webm" type="video/webm" />
+    <!-- 可能なら MP4も用意（互換性UP）。ある場合は↓の行のコメントを外す -->
+    <!-- <source src="/assets/video/LasArmas_ロゴモーション.mp4" type="video/mp4" /> -->
+    お使いのブラウザは動画をサポートしていません
+  </video>
+  <div class="hero-text">
+    <h1>私たちの功績</h1>
+    <p>私たちの歴史を探索だ</p>
+    <span class="btn">詳しく見る</span>
+  </div>
+</a>
 
       </div>
 
