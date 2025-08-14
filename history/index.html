@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>History | Your Team</title>
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <style>
+    .timeline{ border-left:2px solid #1b2230; margin:20px 0; padding-left:16px; }
+    .tl-item{ position:relative; margin:18px 0; }
+    .tl-item::before{ content:""; position:absolute; left:-10px; top:6px; width:10px; height:10px; border-radius:50%; background:#1b90ff; }
+    .tl-date{ color:var(--muted); font-size:.95rem; }
+  </style>
+</head>
+<body>
+  <div id="header"></div>
+  <main>
+    <h1>History</h1>
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-date">2025-08</div>
+        <div class="tl-body"><strong>公式サイト刷新</strong> — GitHub Pagesへ移行。</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-date">2025-07</div>
+        <div class="tl-body"><strong>Game 3 ver1.0 リリース</strong> — Steam公開。</div>
+      </div>
+      <!-- 以降、時系列で追記 -->
+    </div>
+  </main>
+  <div id="footer"></div>
+  <script src="/assets/js/main.js"></script>
+</body>
+</html>
