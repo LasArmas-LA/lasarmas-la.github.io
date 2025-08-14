@@ -2,7 +2,7 @@ const heroSwiper = new Swiper('.hero-slider', {
   loop: true,
   speed: 700,
   autoplay: {
-    delay: 5000,
+    delay: 5000, // 全スライド共通 5秒
     disableOnInteraction: false,
     pauseOnMouseEnter: true
   },
@@ -15,58 +15,44 @@ const heroSwiper = new Swiper('.hero-slider', {
   a11y: { enabled: true },
   on: {
     init(swiper){ handleVideoSlide(swiper); },
-    slideChangeTransitionEnd(swiper){ handleVideoSlide(swiper); } // ←ここが大事
+    slideChangeTransitionEnd(swiper){ handleVideoSlide(swiper); }
   }
 });
 
-let videoTimer = null;
 function handleVideoSlide(swiper){
-  if (videoTimer){ clearTimeout(videoTimer); videoTimer = null; }
-  document.querySelectorAll('.hero-slide video').forEach(v => { try { v.pause(); v.currentTime = 0; } catch(e){}; });
+  // 全動画停止＆リセット
+  document.querySelectorAll('.hero-slide video').forEach(v => {
+    try {
+      v.pause();
+      v.currentTime = 0;
+    } catch(e){}
+  });
 
   const active = swiper.slides[swiper.activeIndex];
   if (!active) return;
+
   const video = active.querySelector('video');
-  if (!video){ if (!swiper.autoplay.running) swiper.autoplay.start(); return; }
+  if (video) {
+    // 動画スライドはループ＆即再生
+    swiper.autoplay.stop(); // スライド切替は手動に
+    video.loop = true;
+    video.muted = true;
+    video.playsInline = true;
+    video.setAttribute('muted','');
+    video.setAttribute('playsinline','');
 
-  if (swiper.autoplay.running) swiper.autoplay.stop();
-
-  video.muted = true;
-  video.playsInline = true;
-  video.setAttribute('muted','');
-  video.setAttribute('playsinline','');
-
-  const start = () => {
+    // ゼロから再生
+    video.currentTime = 0;
     video.play().catch(()=>{});
-    const fallbackMs = 10000;
-    const durationMs = (isFinite(video.duration) && video.duration > 0)
-      ? Math.round(video.duration * 1000)
-      : fallbackMs;
 
-    const done = () => {
-      cleanup();
+    // 5秒後に次のスライドへ
+    setTimeout(() => {
       swiper.slideNext();
       swiper.autoplay.start();
-    };
-    video.addEventListener('ended', done, { once: true });
-    videoTimer = setTimeout(done, durationMs + 200);
+    }, 5000);
 
-    function cleanup(){
-      video.removeEventListener('ended', done);
-      if (videoTimer){ clearTimeout(videoTimer); videoTimer = null; }
-    }
-  };
-
-  if (isFinite(video.duration) && video.duration > 0){
-    start();
   } else {
-    const onMeta = () => { video.removeEventListener('loadedmetadata', onMeta); start(); };
-    video.addEventListener('loadedmetadata', onMeta);
-    // 最悪メタデータが来なくても進む保険
-    videoTimer = setTimeout(() => {
-      swiper.slideNext();
-      swiper.autoplay.start();
-    }, 10200);
-    try { if (video.readyState < 1) video.load(); } catch(e){}
+    // 通常スライドは autoplay に任せる
+    if (!swiper.autoplay.running) swiper.autoplay.start();
   }
 }
