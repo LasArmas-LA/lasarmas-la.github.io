@@ -12,56 +12,52 @@ img{ max-width:100%; height:auto; display:block; }
 .nav a{ padding:8px 10px; border-radius:10px; }
 .nav a:hover{ background:#162031; }
 
-/* ==== Hero 背景画像 ==== */
 .hero {
   position: relative;
   margin-top: 16px;
   border-radius: 18px;
+  overflow: hidden;
 }
 
 .hero img {
   width: 100%;
   object-fit: cover;
   max-height: 460px;
-  filter: brightness(0.70); /* 背景を少し暗く */
+  display: block;
 }
 
-/* ==== 背景グラデーション ==== */
-.hero::before {
-  content: "";
+/* 画像の上に重ねる文字 */
+.hero-text {
   position: absolute;
-  inset: 0;
-  z-index: 1;
-  background: linear-gradient(
-    to top,
-    rgba(0, 0, 0, 0.70) 0%,
-    rgba(0, 0, 0, 0.45) 50%,
-    rgba(0, 0, 0, 0.10) 75%,
-    rgba(0, 0, 0, 0.00) 100%
-  );
-}
-
-/* ==== Hero テキストボックス ==== */
-.hero-copy {
-  position: absolute;
+  left: clamp(16px, 5vw, 40px);
+  bottom: clamp(16px, 5vw, 40px);
   z-index: 2;
-  left: clamp(16px, 3vw, 28px);
-  right: auto;
-  bottom: clamp(16px, 3vw, 28px);
-
-  background: rgba(0, 0, 0, 0.45); /* 半透明パネル */
-  backdrop-filter: blur(4px);      /* 背景をぼかして可読性UP（対応ブラウザのみ） */
-  padding: 16px 20px;
-  border-radius: 12px;
-  display: inline-block;
   color: #fff;
 }
 
-/* ==== Hero テキストシャドウ ==== */
-.hero-copy h1,
-.hero-copy p {
-  text-shadow: 0 3px 12px rgba(0,0,0,0.85),
-               0 1px  2px rgba(0,0,0,0.60);
+/* 見出し・本文に強めのシャドウ */
+.hero-text h1,
+.hero-text p {
+  margin: 0 0 8px;
+  text-shadow:
+    0 3px 12px rgba(0, 0, 0, 0.85),
+    0 1px  2px rgba(0, 0, 0, 0.65);
+}
+
+/* ボタン */
+.hero .btn {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 10px 16px;
+  border-radius: 12px;
+  background: #1b90ff;
+  color: white;
+  font-weight: 600;
+  text-decoration: none;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+}
+.hero .btn:hover {
+  filter: brightness(1.1);
 }
 
 .btn{ display:inline-block; margin-top:8px; padding:10px 16px; border-radius:12px; background:#1b90ff; color:white; font-weight:600; }
