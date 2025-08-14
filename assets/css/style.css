@@ -62,3 +62,12 @@ img{ max-width:100%; height:auto; display:block; }
 @media (max-width:560px){
   .hero-slide img{ max-height:380px; }
 }
+
+body.home {
+  background: #ffffff;
+  color: #000000;
+}
+
+body.home a {
+  color: #1b90ff; /* リンク色を青系に調整 */
+}
