@@ -16,9 +16,17 @@ img{ max-width:100%; height:auto; display:block; }
 /* ===== Hero Slider ===== */
 .hero-slider{ margin-top:16px; border-radius:18px; overflow:hidden; }
 .hero-slide{ position:relative; display:block; color:inherit; }
-.hero-slide img{ width:100%; aspect-ratio: 16 / 9; object-fit:cover; display:block; }
 
-/* 画像の上に重ねる文字 */
+/* 16:9 を統一（画像＆動画） */
+.hero-slide img,
+.hero-slide video{
+  width:100%;
+  aspect-ratio:16 / 9;
+  object-fit:cover;
+  display:block;
+}
+
+/* 画像/動画の上に重ねる文字 */
 .hero-text{
   position:absolute;
   left: clamp(16px, 5vw, 40px);
@@ -60,14 +68,6 @@ img{ max-width:100%; height:auto; display:block; }
 
 /* 小画面調整 */
 @media (max-width:560px){
-  .hero-slide img{ max-height:380px; }
-}
-
-body.home {
-  background: #ffffff;
-  color: #000000;
-}
-
-body.home a {
-  color: #1b90ff; /* リンク色を青系に調整 */
+  .hero-slide img,
+  .hero-slide video{ aspect-ratio:16 / 9; }
 }
