@@ -60,9 +60,6 @@ img{ max-width:100%; height:auto; display:block; }
   filter: brightness(1.1);
 }
 
-.btn{ display:inline-block; margin-top:8px; padding:10px 16px; border-radius:12px; background:#1b90ff; color:white; font-weight:600; }
-.btn:hover{ filter:brightness(1.1); }
-
 .cards{ display:grid; grid-template-columns:repeat(auto-fit, minmax(240px,1fr)); gap:16px; margin:28px 0 40px; }
 .card{ padding:18px; border:1px solid #1b2230; border-radius:16px; background:#0d121b; }
 .card h2{ margin:0 0 8px; }
