@@ -1,335 +1,615 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>洗濯機のまとめ | Presentations</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ドラム式洗濯機おすすめガイド！</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Neutrals -->
+    <!-- Application Structure Plan: アプリケーションのナビゲーションを「総合比較」「メーカー別詳細」「選び方＆購入ガイド」の3つの主要セクションに再構築。これにより、情報へのアクセスがより直感的になります。「総合比較」ではレーダーチャートの表示切替機能を提供。「メーカー別詳細」では、サブナビゲーションで各メーカー情報を切り替え。「選び方＆購入ガイド」セクションを新設し、既存の「目的別おすすめ」「ご家庭向けプラン」に加え、新たに「おすすめ家電量販店＆交渉術」ページを追加。この階層的な構造は、ユーザーが情報を段階的に深掘りできるように設計されており、製品理解から購入戦略までを包括的にサポートします。 -->
+    <!-- Visualization & Content Choices: 
+        1. 総合性能比較 -> Goal: メーカー毎の全体的な強みと弱みを比較 -> Viz: レーダーチャート -> Interaction: 表示切替ボタンで全社比較と個別表示を切り替え。ホバーでスコア表示。 -> Justification: 複数データが重なる視認性の問題を、インタラクティブな表示切替で解決。 -> Library: Chart.js (Canvas)
+        2. 価格帯比較 -> Goal: メーカー毎のおおよその価格帯を比較 -> Viz: 棒グラフ -> Interaction: ホバーで具体的な価格範囲（万円）を表示 -> Justification: 単一指標の比較には棒グラフが最適。 -> Library: Chart.js (Canvas)
+        3. 家電量販店比較＆交渉術 -> Goal: 購入場所の選定と安く買うための知識を提供 -> Presentation: カード型レイアウトと比較リスト、ステップ形式のガイド -> Justification: 複雑な情報を整理し、ユーザーが行動に移しやすいように具体的な手順を示すため。 -> Method: HTML/Tailwind CSS
+        4. おすすめランキング & 個別プラン -> Goal: ユーザーの優先順位やペルソナに基づいた最適な製品を推薦する -> Presentation: ランキング形式のカードレイアウト -> Justification: ユーザーの意思決定を強力にサポートするため。 -> Method: HTML/Tailwind CSS -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body { font-family: 'Noto Sans JP', sans-serif; background-color: #f9f9f7; }
+        .chart-container { position: relative; width: 100%; max-width: 500px; margin-left: auto; margin-right: auto; height: 300px; max-height: 400px; }
+        @media (min-width: 768px) { .chart-container { height: 400px; } }
+        
+        .main-nav-btn { transition: all 0.3s; }
+        .main-nav-btn.active { background-color: #00796b; color: white; }
+        .main-nav-btn.inactive { background-color: #e0e0e0; color: #333; }
 
-  <!-- 既存サイトの共通スタイル -->
-  <link rel="stylesheet" href="./assets/css/style.css" />
+        .sub-nav-btn { transition: all 0.3s; border-bottom: 2px solid transparent; }
+        .sub-nav-btn.active { color: #00796b; border-bottom-color: #00796b; font-weight: bold; }
+        .sub-nav-btn.inactive { color: #6b7280; }
 
-  <!-- Chart.js（グラフ用） -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        .main-content-section { display: none; }
+        .main-content-section.active { display: block; }
+        .sub-content-section { display: none; }
+        .sub-content-section.active { display: block; }
 
-  <style>
-    /* --- このページ専用の軽い追加スタイル（既存CSSと馴染む） --- */
-    .article { width:min(100% - 32px, 1000px); margin:24px auto 48px; }
-    .muted { color: var(--muted); }
-    .grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
-    .grid-3 { display:grid; grid-template-columns:repeat(3, 1fr); gap:16px; }
-    .stack-12 { display:grid; gap:12px; }
-    .stack-16 { display:grid; gap:16px; }
-    .stack-24 { display:grid; gap:24px; }
-    .lead { font-size:1.05rem; color:var(--muted); }
+        .card-shadow { box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05); }
+        .icon { font-size: 2rem; line-height: 1; }
+        .model-card img {
+            aspect-ratio: 1 / 1;
+            object-fit: cover;
+            background-color: #f1f5f9;
+        }
+        .rank-badge {
+            position: absolute; top: -10px; left: -10px; width: 40px; height: 40px;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-weight: bold; font-size: 1.2rem; border: 2px solid white;
+        }
+        .rank-1 { background-color: #FFD700; color: #333; }
+        .rank-2 { background-color: #C0C0C0; color: #333; }
+        .rank-3 { background-color: #CD7F32; color: #fff; }
 
-    .kpi { display:grid; grid-template-columns:repeat(auto-fit, minmax(260px,1fr)); gap:16px; }
-    .kpi .card { background:#0d121b; border:1px solid #1b2230; border-radius:16px; padding:16px; }
-
-    .section { background:#0d121b; border:1px solid #1b2230; border-radius:16px; padding:18px; }
-    .section h2 { margin:0 0 8px; }
-
-    .badge { display:inline-block; padding:2px 8px; border-radius:9999px; background:#162031; color:var(--ink); border:1px solid #1b2230; font-size:.85rem; }
-    .pill { display:inline-block; padding:4px 10px; border-radius:9999px; background:#102138; color:#a7d1ff; border:1px solid #1b2230; font-size:.9rem; }
-
-    .model-card img { aspect-ratio:1 / 1; object-fit:cover; background:#0b0f17; border-radius:12px 12px 0 0; }
-    .model-card .body { padding:12px; }
-
-    /* グラフ入れ物（レスポンシブ） */
-    .chart-wrap { position:relative; width:100%; height:360px; }
-    @media (min-width: 768px) { .chart-wrap{ height:440px; } }
-
-    /* 小見出し装飾 */
-    .subhead { margin-top:18px; padding-bottom:8px; border-bottom:1px solid #1b2230; }
-
-    /* 表示切替ボタン */
-    .switcher { display:flex; flex-wrap:wrap; gap:8px; }
-    .chip { padding:6px 12px; border-radius:9999px; border:1px solid #254064; background:#0e1623; color:#cde6ff; cursor:pointer; font-size:.9rem; }
-    .chip.active, .chip:hover { background:#1b90ff; color:#fff; border-color:#1b90ff; }
-
-    /* レスポンシブ */
-    @media (max-width: 800px){
-      .grid-2, .grid-3 { grid-template-columns:1fr; }
-    }
-  </style>
+        .radar-control-btn {
+            padding: 4px 12px; border-radius: 9999px; font-size: 0.875rem; transition: all 0.2s;
+            border: 1px solid #00796b; color: #00796b; cursor: pointer;
+        }
+        .radar-control-btn.active, .radar-control-btn:hover { background-color: #00796b; color: white; }
+    </style>
 </head>
-<body>
-  <!-- 共通ヘッダー -->
-  <header class="site-header">
-    <div class="header-inner">
-      <a class="brand" href="https://lasarmas-la.github.io/">
-        <!-- ロゴは .webp を想定 -->
-        <img src="./assets/img/logo.webp" alt="LasArmas">
-      </a>
-      <nav class="nav">
-        <a href="https://lasarmas-la.github.io/">Home</a>
-        <a href="https://lasarmas-la.github.io/games/">Games</a>
-        <a href="https://lasarmas-la.github.io/blog/">Blog</a>
-        <a href="https://lasarmas-la.github.io/present/">Presentations</a>
-      </nav>
+<body class="text-gray-800">
+
+    <div class="container mx-auto p-4 md:p-8">
+        <header class="text-center mb-8">
+            <h1 class="text-3xl md:text-4xl font-bold text-teal-800">ドラム式洗濯機おすすめガイド！</h1>
+            <p class="mt-2 text-gray-600">あなたに最適な1台を見つけよう　ネスタ調べ</p>
+        </header>
+
+        <nav id="main-nav" class="flex flex-wrap justify-center gap-2 md:gap-4 mb-8">
+            <button data-target="comparison" class="main-nav-btn active font-semibold py-2 px-6 rounded-lg">① 総合比較</button>
+            <button data-target="manufacturers" class="main-nav-btn inactive font-semibold py-2 px-6 rounded-lg">② メーカー別詳細</button>
+            <button data-target="guide" class="main-nav-btn inactive font-semibold py-2 px-6 rounded-lg">③ 選び方＆購入ガイド</button>
+        </nav>
+
+        <main id="main-content">
+            <!-- Section 1: 総合比較 -->
+            <section id="comparison" class="main-content-section active">
+                <div class="bg-white p-6 rounded-xl card-shadow mb-8">
+                    <h2 class="text-2xl font-bold text-center mb-1 text-teal-700">総合性能比較</h2>
+                    <p class="text-center text-gray-600 mb-6">下のボタンで表示を切り替えられます。各社の強みや性能バランスをご確認ください。</p>
+                    <div class="text-center mb-4">
+                        <div id="radar-controls" class="inline-flex flex-wrap justify-center gap-2">
+                             <button data-company="all" class="radar-control-btn active">全て</button>
+                             <button data-company="panasonic" class="radar-control-btn">パナソニック</button>
+                             <button data-company="hitachi" class="radar-control-btn">日立</button>
+                             <button data-company="toshiba" class="radar-control-btn">東芝</button>
+                             <button data-company="sharp" class="radar-control-btn">シャープ</button>
+                             <button data-company="aqua" class="radar-control-btn">AQUA</button>
+                             <button data-company="irisohyama" class="radar-control-btn">アイリス</button>
+                             <button data-company="haier" class="radar-control-btn">ハイアール</button>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="radarChart"></canvas>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-xl card-shadow">
+                    <h2 class="text-2xl font-bold text-center mb-1 text-teal-700">価格帯比較</h2>
+                    <p class="text-center text-gray-600 mb-6">主力モデルの価格帯を比較。ご自身の予算に合ったメーカーを見つけるための参考にしてください。</p>
+                    <div class="chart-container h-80 md:h-96 max-h-[450px]">
+                        <canvas id="priceChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 2: メーカー別詳細 -->
+            <section id="manufacturers" class="main-content-section">
+                <nav id="manufacturer-sub-nav" class="flex flex-wrap justify-center gap-4 md:gap-6 mb-8 border-b">
+                    <button data-target="panasonic-details" class="sub-nav-btn active pb-2">パナソニック</button>
+                    <button data-target="hitachi-details" class="sub-nav-btn inactive pb-2">日立</button>
+                    <button data-target="toshiba-details" class="sub-nav-btn inactive pb-2">東芝</button>
+                    <button data-target="sharp-details" class="sub-nav-btn inactive pb-2">シャープ</button>
+                    <button data-target="aqua-details" class="sub-nav-btn inactive pb-2">AQUA</button>
+                    <button data-target="irisohyama-details" class="sub-nav-btn inactive pb-2">アイリス</button>
+                    <button data-target="haier-details" class="sub-nav-btn inactive pb-2">ハイアール</button>
+                </nav>
+                <div id="manufacturer-content">
+                    <div id="panasonic-details" class="sub-content-section active">
+                        <div class="bg-white p-6 rounded-xl card-shadow">
+                            <h2 class="text-3xl font-bold mb-2 text-center text-teal-700">Panasonic</h2>
+                            <p class="text-center text-gray-600 mb-6">「スゴ落ち泡洗浄」による高い洗浄力と、使いやすさを追求した機能が魅力。特に温水洗浄や洗剤自動投入機能の評価が高いメーカーです。</p>
+                            <h3 class="text-xl font-bold mt-8 mb-4 text-teal-700 border-b-2 border-teal-200 pb-2">主な特徴</h3>
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div class="bg-teal-50 p-4 rounded-lg"><p class="icon text-teal-600">🧼</p><h4 class="font-bold text-lg">スゴ落ち泡洗浄</h4><p>高濃度の洗剤液を泡立てて衣類に浸透させ、繊維の奥の汚れまでしっかり落とします。</p></div>
+                                <div class="bg-teal-50 p-4 rounded-lg"><p class="icon text-teal-600">🤖</p><h4 class="font-bold text-lg">液体洗剤・柔軟剤 自動投入</h4><p>タンクに洗剤を補充しておけば、洗濯のたびに最適な量を自動で計量・投入。手間が省けます。</p></div>
+                                <div class="bg-teal-50 p-4 rounded-lg"><p class="icon text-teal-600">🌡️</p><h4 class="font-bold text-lg">温水洗浄機能</h4><p>黄ばみやニオイの原因菌まで洗い流す、多彩な温水コースが充実しています。</p></div>
+                                <div class="bg-teal-50 p-4 rounded-lg"><p class="icon text-teal-600">💨</p><h4 class="font-bold text-lg">はやふわ乾燥 ヒートポンプ</h4><p>低温風でふんわり仕上げ。衣類の傷みや縮みを抑えながら効率的に乾燥します。</p></div>
+                            </div>
+                            <h3 class="text-xl font-bold mt-8 mb-4 text-teal-700 border-b-2 border-teal-200 pb-2">維持費 & スマート機能</h3>
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div class="bg-gray-100 p-4 rounded-lg">
+                                    <h4 class="font-bold text-lg mb-2">💰 1回あたりの電気代の目安</h4>
+                                    <p><span class="font-bold text-2xl text-teal-600">約26円</span> (洗濯〜乾燥時)</p>
+                                    <p class="text-xs text-gray-500">※消費電力量約850Wh、電力料金目安単価31円/kWhで算出。</p>
+                                </div>
+                                <div class="bg-gray-100 p-4 rounded-lg">
+                                    <h4 class="font-bold text-lg mb-2">📱 スマート機能「スマホで洗濯」</h4>
+                                    <p>外出先からの遠隔操作、予約時間の変更、洗剤のオンライン購入などが可能です。</p>
+                                </div>
+                            </div>
+                            <h3 class="text-xl font-bold mt-8 mb-4 text-teal-700 border-b-2 border-teal-200 pb-2">口コミ</h3>
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div><h4 class="font-bold text-lg text-green-700">👍 良い点</h4><ul class="list-disc list-inside space-y-2 mt-2"><li>カレーやミートソースのシミも温水洗浄で綺麗に落ちた。</li><li>洗剤自動投入は一度使うと戻れないほど便利。計量の手間がないだけでストレスが激減。</li><li>乾燥後のタオルが他のメーカーよりフワフワになる気がする。</li></ul></div>
+                                <div><h4 class="font-bold text-lg text-red-700">👎 気になる点</h4><ul class="list-disc list-inside space-y-2 mt-2"><li>最上位モデルは価格が40万円近く、手が出しにくい。</li><li>乾燥フィルターの奥にあるホコリが少し取りにくい。定期的な掃除が必要。</li></ul></div>
+                            </div>
+                            <h3 class="text-xl font-bold mt-8 mb-4 text-teal-700 border-b-2 border-teal-200 pb-2">代表モデル紹介</h3>
+                            <div class="grid md:grid-cols-3 gap-6">
+                                <div class="bg-white rounded-lg card-shadow model-card"><img src="https://placehold.co/400x400/e2e8f0/334155?text=NA-LX129CL/R" alt="パナソニック NA-LX129CL/R" class="rounded-t-lg"><div class="p-4"><h4 class="font-bold">NA-LX129CL/R</h4><p class="text-sm text-gray-600">全ての機能を搭載したフラッグシップモデル。</p></div></div>
+                                <div class="bg-white rounded-lg card-shadow model-card"><img src="https://placehold.co/400x400/e2e8f0/334155?text=NA-LX127CL/R" alt="パナソニック NA-LX127CL/R" class="rounded-t-lg"><div class="p-4"><h4 class="font-bold">NA-LX127CL/R</h4><p class="text-sm text-gray-600">高い洗浄力と省エネ性を両立した人気モデル。</p></div></div>
+                                <div class="bg-white rounded-lg card-shadow model-card"><img src="https://placehold.co/400x400/e2e8f0/334155?text=NA-VG2800L/R" alt="パナソニック NA-VG2800L/R" class="rounded-t-lg"><div class="p-4"><h4 class="font-bold">NA-VG2800L/R</h4><p class="text-sm text-gray-600">デザイン性の高いキューブルシリーズ。</p></div></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="hitachi-details" class="sub-content-section">
+                         <div class="bg-white p-6 rounded-xl card-shadow">
+                            <h2 class="text-3xl font-bold mb-2 text-center text-teal-700">HITACHI</h2>
+                            <p class="text-center text-gray-600 mb-6">大流量シャワー「ナイアガラ洗浄」と、シワを抑える「風アイロン」が代名詞。乾燥機能の質の高さを重視する方におすすめです。</p>
+                            <h3 class="text-xl font-bold mt-8 mb-4 text-teal-700 border-b-2 border-teal-200 pb-2">主な特徴</h3>
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div class="bg-teal-50 p-4 rounded-lg"><p class="icon text-teal-600">💨</p><h4 class="font-bold text-lg">風アイロン</h4><p>高速風で衣類のシワを伸ばしながら乾燥。アイロンがけの手間を大幅に削減します。</p></div>
+                                <div class="bg-teal-50 p-4 rounded-lg"><p class="icon text-teal-600">🌊</p><h4 class="font-bold text-lg">ナイアガラ洗浄</h4><p>大流量のシャワーで、高濃度洗剤を繊維の奥まで浸透させ、頑固な汚れもすっきり落とします。</p></div>
+                                <div class="bg-teal-50 p-4 rounded-lg"><p class="icon text-teal-600">🤖</p><h4 class="font-bold text-lg">AIお洗濯</h4><p>複数のセンサーで洗濯物の状況を検知し、洗い方や時間を自動で調整。賢くきれいに洗い上げます。</p></div>
+                                <div class="bg-teal-50 p-4 rounded-lg"><p class="icon text-teal-600">🕸️</p><h4 class="font-bold text-lg">らくメンテ</h4><p>乾燥フィルター、糸くずフィルターなど、お手入れが簡単になる工夫が施されています。</p></div>
+                            </div>
+                            <h3 class="text-xl font-bold mt-8 mb-4 text-teal-700 border-b-2 border-teal-200 pb-2">維持費 & スマート機能</h3>
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div class="bg-gray-100 p-4 rounded-lg">
+                                    <h4 class="font-bold text-lg mb-2">💰 1回あたりの電気代の目安</h4>
+                                    <p><span class="font-bold text-2xl text-teal-600">約28円</span> (洗濯〜乾燥時)</p>
+                                    <p class="text-xs text-gray-500">※消費電力量約900Wh、電力料金目安単価31円/kWhで算出。</p>
+                                </div>
+                                <div class="bg-gray-100 p-4 rounded-lg">
+                                    <h4 class="font-bold text-lg mb-2">📱 スマート機能「洗濯コンシェルジュ」</h4>
+                                    <p>運転状況の通知、好みの設定を記憶する「わがや流AI」、洗剤・柔軟剤の残量通知や自動再注文ができます。</p>
+                                </div>
+                            </div>
+                            <h3 class="text-xl font-bold mt-8 mb-4 text-teal-700 border-b-2 border-teal-200 pb-2">口コミ</h3>
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div><h4 class="font-bold text-lg text-green-700">👍 良い点</h4><ul class="list-disc list-inside space-y-2 mt-2"><li>「風アイロン」は本当に優秀。ワイシャツやブラウスならアイロン無しで着られるレベル。</li><li>乾燥フィルターがボックス型で、ホコリがポイっと捨てやすく手入れが楽。</li><li>大容量モデルは毛布2枚でも余裕で洗えて乾燥できる。</li></ul></div>
+                                <div><h4 class="font-bold text-lg text-red-700">👎 気になる点</h4><ul class="list-disc list-inside space-y-2 mt-2"><li>脱水時の振動がやや大きいので、設置場所によっては気になるかも。</li><li>ナイアガラ洗浄は節水ではないので、水道代を気にする人には不向きかもしれない。</li></ul></div>
+                            </div>
+                            <h3 class="text-xl font-bold mt-8 mb-4 text-teal-700 border-b-2 border-teal-200 pb-2">代表モデル紹介</h3>
+                            <div class="grid md:grid-cols-3 gap-6">
+                                <div class="bg-white rounded-lg card-shadow model-card"><img src="https://placehold.co/400x400/e2e8f0/334155?text=BD-STX130JL/R" alt="日立 BD-STX130JL/R" class="rounded-t-lg"><div class="p-4"><h4 class="font-bold">BD-STX130JL/R</h4><p class="text-sm text-gray-600">「風アイロン」と大容量が魅力の最上位モデル。</p></div></div>
+                                <div class="bg-white rounded-lg card-shadow model-card"><img src="https://placehold.co/400x400/e2e8f0/334155?text=BD-SX120JL/R" alt="日立 BD-SX120JL/R" class="rounded-t-lg"><div class="p-4"><h4 class="font-bold">BD-SX120JL/R</h4><p class="text-sm text-gray-600">AIお洗濯とらくメンテを搭載した高機能モデル。</p></div></div>
+                                <div class="bg-white rounded-lg card-shadow model-card"><img src="https://placehold.co/400x400/e2e8f0/334155?text=BD-SV120JL/R" alt="日立 BD-SV120JL/R" class="rounded-t-lg"><div class="p-4"><h4 class="font-bold">BD-SV120JL/R</h4><p class="text-sm text-gray-600">基本性能をしっかり押さえたスタンダードモデル。</p></div></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="toshiba-details" class="sub-content-section">
+                        <div class="bg-white p-6 rounded-xl card-shadow">
+                            <h2 class="text-3xl font-bold mb-2 text-center text-teal-700">TOSHIBA</h2>
+                            <p class="text-center text-gray-600 mb-6">微細な泡「ウルトラファインバブル」が特徴。洗浄力を高めつつ、衣類へのダメージを抑えます。静音性や低振動設計にも定評があります。</p>
+                            <h3 class="text-xl font-bold mt-8 mb-4 text-teal-700 border-b-2 border-teal-200 pb-2">主な特徴</h3>
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div class="bg-teal-50 p-4 rounded-lg"><p class="icon text-teal-600">🫧</p><h4 class="font-bold text-lg">抗菌ウルトラファインバブル洗浄EX</h4><p>ナノサイズの泡が洗剤の効果を最大限に引き出し、繊維の隙間の汚れまで徹底的に除去します。</p></div>
+                                <div class="bg-teal-50 p-4 rounded-lg"><p class="icon text-teal-600">🤫</p><h4 class="font-bold text-lg">低振動・低騒音設計</h4><p>独自のモーターとダンパーにより、夜間や早朝でも気兼ねなく洗濯できるほどの静かさを実現。</p></div>
+                                <div class="bg-teal-50 p-4 rounded-lg"><p class="icon text-teal-600">💧</p><h4 class="font-bold text-lg">液体洗剤・柔軟剤 自動投入</h4><p>約1000mLの大容量タンクを搭載し、洗剤の補充頻度を減らせます。</p></div>
+                                <div class="bg-teal-50 p-4 rounded-lg"><p class="icon text-teal-600">📱</p><h4 class="font-bold text-lg">スマートフォン連携</h4><p>外出先から洗濯の予約や状況確認が可能。コースのダウンロードもできます。</p></div>
+                            </div>
+                            <h3 class="text-xl font-bold mt-8 mb-4 text-teal-700 border-b-2 border-teal-200 pb-2">維持費 & スマート機能</h3>
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div class="bg-gray-100 p-4 rounded-lg">
+                                    <h4 class="font-bold text-lg mb-2">💰 1回あたりの電気代の目安</h4>
+                                    <p><span class="font-bold text-2xl text-teal-600">約22円</span> (洗濯〜乾燥時)</p>
+                                    <p class="text-xs text-gray-500">※消費電力量約710Wh、電力料金目安単価31円/kWhで算出。</p>
+                                </div>
+                                <div class="bg-gray-100 p-4 rounded-lg">
+                                    <h4 class="font-bold text-lg mb-2">📱 スマート機能「IoLIFE」</h4>
+                                    <p>スマホでの遠隔操作に加え、運転状況をキャラクターが知らせるなど、ユニークな機能も搭載。</p>
+                                </div>
+                            </div>
+                            <h3 class="text-xl font-bold mt-8 mb-4 text-teal-700 border-b-2 border-teal-200 pb-2">口コミ</h3>
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div><h4 class="font-bold text-lg text-green-700">👍 良い点</h4><ul class="list-disc list-inside space-y-2 mt-2"><li>本当に静か。深夜に動かしても全く気にならず、マンション住まいにはありがたい。</li><li>ワイシャツの襟汚れが予洗いなしで綺麗になった。ウルトラファインバブルの効果かも。</li><li>タッチパネルの反応が良く、見た目もスタイリッシュで気に入っている。</li></ul></div>
+                                <div><h4 class="font-bold text-lg text-red-700">👎 気になる点</h4><ul class="list-disc list-inside space-y-2 mt-2"><li>乾燥フィルターの掃除が少し複雑な構造で、ホコリが残りがち。</li><li>ドアのパッキン部分に水が溜まりやすいので、使用後に拭き取りが必要。</li></ul></div>
+                            </div>
+                            <h3 class="text-xl font-bold mt-8 mb-4 text-teal-700 border-b-2 border-teal-200 pb-2">代表モデル紹介</h3>
+                            <div class="grid md:grid-cols-3 gap-6">
+                                <div class="bg-white rounded-lg card-shadow model-card"><img src="https://placehold.co/400x400/e2e8f0/334155?text=TW-127XP3L/R" alt="東芝 TW-127XP3L/R" class="rounded-t-lg"><div class="p-4"><h4 class="font-bold">TW-127XP3L/R</h4><p class="text-sm text-gray-600">高い洗浄力と静音性を誇るフラッグシップモデル。</p></div></div>
+                                <div class="bg-white rounded-lg card-shadow model-card"><img src="https://placehold.co/400x400/e2e8f0/334155?text=TW-127XH3L/R" alt="東芝 TW-127XH3L/R" class="rounded-t-lg"><div class="p-4"><h4 class="font-bold">TW-127XH3L/R</h4><p class="text-sm text-gray-600">ウルトラファインバブルを搭載した高コスパモデル。</p></div></div>
+                                <div class="bg-white rounded-lg card-shadow model-card"><img src="https://placehold.co/400x400/e2e8f0/334155?text=TW-95GM3L" alt="東芝 TW-95GM3L" class="rounded-t-lg"><div class="p-4"><h4 class="font-bold">TW-95GM3L</h4><p class="text-sm text-gray-600">マンションサイズに対応したコンパクトモデル。</p></div></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="sharp-details" class="sub-content-section">
+                        <div class="bg-white p-6 rounded-xl card-shadow">
+                            <h2 class="text-3xl font-bold mb-2 text-center text-teal-700">SHARP</h2>
+                            <p class="text-center text-gray-600 mb-6">独自の「プラズマクラスター」技術で、衣類の除菌・消臭に強み。乾燥フィルターの自動掃除機能など、メンテナンス性にも優れています。</p>
+                            <h3 class="text-xl font-bold mt-8 mb-4 text-teal-700 border-b-2 border-teal-200 pb-2">主な特徴</h3>
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div class="bg-teal-50 p-4 rounded-lg"><p class="icon text-teal-600">✨</p><h4 class="font-bold text-lg">プラズマクラスター</h4><p>水で洗えない衣類も除菌・消臭。洗濯槽の黒カビ抑制効果もあります。</p></div>
+                                <div class="bg-teal-50 p-4 rounded-lg"><p class="icon text-teal-600">🌡️</p><h4 class="font-bold text-lg">ハイブリッド乾燥NEXT</h4><p>ヒートポンプとサポートヒーターの組み合わせで、省エネかつ温かくふんわりした仕上がりに。</p></div>
+                                <div class="bg-teal-50 p-4 rounded-lg"><p class="icon text-teal-600">🧹</p><h4 class="font-bold text-lg">乾燥フィルター自動お掃除</h4><p>運転終了後、乾燥中にたまったホコリを自動でクリーニング。お手入れの手間を削減します。</p></div>
+                                <div class="bg-teal-50 p-4 rounded-lg"><p class="icon text-teal-600">🗣️</p><h4 class="font-bold text-lg">COCORO WASH サービス</h4><p>AIが洗濯のコツをアドバイスしたり、天気予報と連携して最適な洗濯を提案してくれます。</p></div>
+                            </div>
+                            <h3 class="text-xl font-bold mt-8 mb-4 text-teal-700 border-b-2 border-teal-200 pb-2">維持費 & スマート機能</h3>
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div class="bg-gray-100 p-4 rounded-lg">
+                                    <h4 class="font-bold text-lg mb-2">💰 1回あたりの電気代の目安</h4>
+                                    <p><span class="font-bold text-2xl text-teal-600">約16円</span> (洗濯〜乾燥時)</p>
+                                    <p class="text-xs text-gray-500">※消費電力量約520Wh、電力料金目安単価31円/kWhで算出。</p>
+                                </div>
+                                <div class="bg-gray-100 p-4 rounded-lg">
+                                    <h4 class="font-bold text-lg mb-2">📱 スマート機能「COCORO WASH」</h4>
+                                    <p>AIが家庭の洗濯状況を学習し、最適なコースを提案。天気予報と連携し、乾きやすい時間帯を知らせます。</p>
+                                </div>
+                            </div>
+                            <h3 class="text-xl font-bold mt-8 mb-4 text-teal-700 border-b-2 border-teal-200 pb-2">口コミ</h3>
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div><h4 class="font-bold text-lg text-green-700">👍 良い点</h4><ul class="list-disc list-inside space-y-2 mt-2"><li>乾燥フィルター自動掃除は神機能。面倒な掃除から解放された。</li><li>プラズマクラスターで頻繁に洗えないスーツや制服のニオイが取れて助かる。</li><li>電気代が本当に安い。アプリで電気代の目安が見えるのも良い。</li></ul></div>
+                                <div><h4 class="font-bold text-lg text-red-700">👎 気になる点</h4><ul class="list-disc list-inside space-y-2 mt-2"><li>ドアの開閉が左右選べないモデルが多いのが残念。</li><li>基本的な洗浄力は他の大手メーカーに比べると少しマイルドな印象。</li></ul></div>
+                            </div>
+                            <h3 class="text-xl font-bold mt-8 mb-4 text-teal-700 border-b-2 border-teal-200 pb-2">代表モデル紹介</h3>
+                            <div class="grid md:grid-cols-3 gap-6">
+                                <div class="bg-white rounded-lg card-shadow model-card"><img src="https://placehold.co/400x400/e2e8f0/334155?text=ES-X11B-SL/SR" alt="シャープ ES-X11B-SL/SR" class="rounded-t-lg"><div class="p-4"><h4 class="font-bold">ES-X11B-SL/SR</h4><p class="text-sm text-gray-600">液体洗剤自動投入と自動掃除が魅力の最上位モデル。</p></div></div>
+                                <div class="bg-white rounded-lg card-shadow model-card"><img src="https://placehold.co/400x400/e2e8f0/334155?text=ES-S7J-WL/WR" alt="シャープ ES-S7J-WL/WR" class="rounded-t-lg"><div class="p-4"><h4 class="font-bold">ES-S7J-WL/WR</h4><p class="text-sm text-gray-600">マンションにも設置しやすいコンパクトタイプ。</p></div></div>
+                                <div class="bg-white rounded-lg card-shadow model-card"><img src="https://placehold.co/400x400/e2e8f0/334155?text=ES-W11A-SL/SR" alt="シャープ ES-W11A-SL/SR" class="rounded-t-lg"><div class="p-4"><h4 class="font-bold">ES-W11A-SL/SR</h4><p class="text-sm text-gray-600">プラズマクラスターを搭載したスタンダードモデル。</p></div></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="aqua-details" class="sub-content-section">
+                        <div class="bg-white p-6 rounded-xl card-shadow">
+                            <h2 class="text-3xl font-bold mb-2 text-center text-teal-700">AQUA</h2>
+                            <p class="text-center text-gray-600 mb-6">元三洋電機の技術を継承し、デザイン性とユニークな機能で差別化。「まっ直ぐドラム」など使いやすさに配慮した設計が光ります。</p>
+                            <h3 class="text-xl font-bold mt-8 mb-4 text-teal-700 border-b-2 border-teal-200 pb-2">主な特徴</h3>
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div class="bg-teal-50 p-4 rounded-lg"><p class="icon text-teal-600">📏</p><h4 class="font-bold text-lg">まっ直ぐドラム</h4><p>ドラムを水平に配置し、衣類の出し入れがしやすい。腰への負担を軽減するユニバーサルデザインです。</p></div>
+                                <div class="bg-teal-50 p-4 rounded-lg"><p class="icon text-teal-600">🌡️</p><h4 class="font-bold text-lg">お湯洗いコース</h4><p>皮脂汚れや黄ばみに効果的なお湯洗い機能を搭載。洗浄力を重視するユーザーに人気です。</p></div>
+                                <div class="bg-teal-50 p-4 rounded-lg"><p class="icon text-teal-600">💨</p><h4 class="font-bold text-lg">エアウォッシュ</h4><p>加熱水蒸気とUVライトで、水を使わずに衣類の除菌・消臭・シワ伸ばしが可能です。</p></div>
+                                <div class="bg-teal-50 p-4 rounded-lg"><p class="icon text-teal-600">🧴</p><h4 class="font-bold text-lg">液体洗剤・柔軟剤自動投入</h4><p>面倒な計量の手間を省き、洗濯物に合わせて適量を自動で投入してくれる便利な機能です。</p></div>
+                            </div>
+                            <h3 class="text-xl font-bold mt-8 mb-4 text-teal-700 border-b-2 border-teal-200 pb-2">維持費 & スマート機能</h3>
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div class="bg-gray-100 p-4 rounded-lg">
+                                    <h4 class="font-bold text-lg mb-2">💰 1回あたりの電気代の目安</h4>
+                                    <p><span class="font-bold text-2xl text-teal-600">約37円</span> (洗濯〜乾燥時)</p>
+                                    <p class="text-xs text-gray-500">※消費電力量約1200Wh、電力料金目安単価31円/kWhで算出。</p>
+                                </div>
+                                <div class="bg-gray-100 p-4 rounded-lg">
+                                    <h4 class="font-bold text-lg mb-2">📱 スマート機能「AQUA Smart App」</h4>
+                                    <p>スマホでの遠隔操作や予約、運転終了通知などの基本的な機能を搭載しています。</p>
+                                </div>
+                            </div>
+                            <h3 class="text-xl font-bold mt-8 mb-4 text-teal-700 border-b-2 border-teal-200 pb-2">口コミ</h3>
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div><h4 class="font-bold text-lg text-green-700">👍 良い点</h4><ul class="list-disc list-inside space-y-2 mt-2"><li>ドラムが斜めになっていないので、洗濯物の出し入れが本当にしやすい。腰痛持ちには嬉しい。</li><li>他社にはないおしゃれなデザインで、洗面所の雰囲気が良くなった。</li><li>お湯洗い機能で子供の食べこぼしがよく落ちる。</li></ul></div>
+                                <div><h4 class="font-bold text-lg text-red-700">👎 気になる点</h4><ul class="list-disc list-inside space-y-2 mt-2"><li>乾燥に時間がかかり、仕上がりも少しゴワつくことがある。</li><li>運転中の音が大きいので、夜間の使用は少し躊躇する。</li></ul></div>
+                            </div>
+                            <h3 class="text-xl font-bold mt-8 mb-4 text-teal-700 border-b-2 border-teal-200 pb-2">代表モデル紹介</h3>
+                            <div class="grid md:grid-cols-3 gap-6">
+                                <div class="bg-white rounded-lg card-shadow model-card"><img src="https://placehold.co/400x400/e2e8f0/334155?text=AQW-DX12P" alt="AQUA AQW-DX12P" class="rounded-t-lg"><div class="p-4"><h4 class="font-bold">AQW-DX12P</h4><p class="text-sm text-gray-600">まっ直ぐドラムと大容量12kgが特徴のモデル。</p></div></div>
+                                <div class="bg-white rounded-lg card-shadow model-card"><img src="https://placehold.co/400x400/e2e8f0/334155?text=AQW-D12N" alt="AQUA AQW-D12N" class="rounded-t-lg"><div class="p-4"><h4 class="font-bold">AQW-D12N</h4><p class="text-sm text-gray-600">エアウォッシュ+搭載の高機能モデル。</p></div></div>
+                                <div class="bg-white rounded-lg card-shadow model-card"><img src="https://placehold.co/400x400/e2e8f0/334155?text=AQW-F8N" alt="AQUA AQW-F8N" class="rounded-t-lg"><div class="p-4"><h4 class="font-bold">AQW-F8N</h4><p class="text-sm text-gray-600">乾燥機能なし、洗濯専用のシンプルなモデル。</p></div></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="irisohyama-details" class="sub-content-section">
+                        <div class="bg-white p-6 rounded-xl card-shadow">
+                            <h2 class="text-3xl font-bold mb-2 text-center text-teal-700">アイリスオーヤマ</h2>
+                            <p class="text-center text-gray-600 mb-6">圧倒的な低価格が最大の武器。機能を絞り、シンプルな操作性を実現しているため、初めてドラム式洗濯機を使う方にもおすすめです。</p>
+                            <h3 class="text-xl font-bold mt-8 mb-4 text-teal-700 border-b-2 border-teal-200 pb-2">主な特徴</h3>
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div class="bg-teal-50 p-4 rounded-lg"><p class="icon text-teal-600">💰</p><h4 class="font-bold text-lg">高いコストパフォーマンス</h4><p>必要な機能に絞ることで、非常にリーズナブルな価格を実現しています。</p></div>
+                                <div class="bg-teal-50 p-4 rounded-lg"><p class="icon text-teal-600">🌡️</p><h4 class="font-bold text-lg">温水洗浄機能</h4><p>低価格帯ながら温水コースを搭載したモデルもあり、ガンコな汚れにも対応できます。</p></div>
+                                <div class="bg-teal-50 p-4 rounded-lg"><p class="icon text-teal-600">💨</p><h4 class="font-bold text-lg">ふんわりシワ取りコース</h4><p>乾燥の最後に送風運転を行い、衣類のシワを軽減。アイロンがけの手間を省きます。</p></div>
+                                <div class="bg-teal-50 p-4 rounded-lg"><p class="icon text-teal-600">⚙️</p><h4 class="font-bold text-lg">シンプルな操作パネル</h4><p>誰でも直感的に使える分かりやすいボタン配置で、機械操作が苦手な方でも安心です。</p></div>
+                            </div>
+                            <h3 class="text-xl font-bold mt-8 mb-4 text-teal-700 border-b-2 border-teal-200 pb-2">維持費 & スマート機能</h3>
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div class="bg-gray-100 p-4 rounded-lg">
+                                    <h4 class="font-bold text-lg mb-2">💰 1回あたりの電気代の目安</h4>
+                                    <p><span class="font-bold text-2xl text-teal-600">約64円</span> (洗濯〜乾燥時)</p>
+                                    <p class="text-xs text-gray-500">※消費電力量約2050Wh、電力料金目安単価31円/kWhで算出。</p>
+                                </div>
+                                <div class="bg-gray-100 p-4 rounded-lg">
+                                    <h4 class="font-bold text-lg mb-2">📱 スマート機能</h4>
+                                    <p>スマート機能は基本的に非搭載。シンプルさを追求したモデルが中心です。</p>
+                                </div>
+                            </div>
+                            <h3 class="text-xl font-bold mt-8 mb-4 text-teal-700 border-b-2 border-teal-200 pb-2">口コミ</h3>
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div><h4 class="font-bold text-lg text-green-700">👍 良い点</h4><ul class="list-disc list-inside space-y-2 mt-2"><li>ドラム式が10万円以下で買えるのは驚異的。初期費用を抑えたい人には最適。</li><li>操作がシンプルで迷うことがない。機械が苦手な親にも勧められた。</li><li>温水洗浄機能がついているので、値段の割に洗浄力は悪くない。</li></ul></div>
+                                <div><h4 class="font-bold text-lg text-red-700">👎 気になる点</h4><ul class="list-disc list-inside space-y-2 mt-2"><li>洗濯から乾燥まで4〜5時間かかることも。時間に余裕がないと厳しい。</li><li>脱水時の音が掃除機並みに大きい。防振マットは必須。</li><li>乾燥機能は生乾きになることもあり、過度な期待は禁物。</li></ul></div>
+                            </div>
+                            <h3 class="text-xl font-bold mt-8 mb-4 text-teal-700 border-b-2 border-teal-200 pb-2">代表モデル紹介</h3>
+                            <div class="grid md:grid-cols-3 gap-6">
+                                <div class="bg-white rounded-lg card-shadow model-card"><img src="https://placehold.co/400x400/e2e8f0/334155?text=CDK842-W" alt="アイリスオーヤマ CDK842-W" class="rounded-t-lg"><div class="p-4"><h4 class="font-bold">CDK842-W</h4><p class="text-sm text-gray-600">温水洗浄とふんわりシワ取り搭載の主力モデル。</p></div></div>
+                                <div class="bg-white rounded-lg card-shadow model-card"><img src="https://placehold.co/400x400/e2e8f0/334155?text=FLK842-W" alt="アイリスオーヤマ FLK842-W" class="rounded-t-lg"><div class="p-4"><h4 class="font-bold">FLK842-W</h4><p class="text-sm text-gray-600">液体洗剤自動投入機能を備えた上位モデル。</p></div></div>
+                                <div class="bg-white rounded-lg card-shadow model-card"><img src="https://placehold.co/400x400/e2e8f0/334155?text=HDK842Z-W" alt="アイリスオーヤマ HDK842Z-W" class="rounded-t-lg"><div class="p-4"><h4 class="font-bold">HDK842Z-W</h4><p class="text-sm text-gray-600">省エネなヒートポンプ式を採用したモデル。</p></div></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="haier-details" class="sub-content-section">
+                        <div class="bg-white p-6 rounded-xl card-shadow">
+                            <h2 class="text-3xl font-bold mb-2 text-center text-teal-700">Haier</h2>
+                            <p class="text-center text-gray-600 mb-6">世界的な家電ブランド。手頃な価格帯と、一人暮らしや少人数の家庭に最適なコンパクト設計のモデルが人気を集めています。</p>
+                            <h3 class="text-xl font-bold mt-8 mb-4 text-teal-700 border-b-2 border-teal-200 pb-2">主な特徴</h3>
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div class="bg-teal-50 p-4 rounded-lg"><p class="icon text-teal-600">🏢</p><h4 class="font-bold text-lg">コンパクト設計</h4><p>一般的な防水パンにも収まりやすいコンパクトなモデルが多く、設置場所が限られている場合に最適です。</p></div>
+                                <div class="bg-teal-50 p-4 rounded-lg"><p class="icon text-teal-600">⏱️</p><h4 class="font-bold text-lg">「お急ぎ」コース</h4><p>軽い汚れの衣類を短時間で洗濯から乾燥まで仕上げるコースがあり、忙しい時に便利です。</p></div>
+                                <div class="bg-teal-50 p-4 rounded-lg"><p class="icon text-teal-600">✨</p><h4 class="font-bold text-lg">除菌コース</h4><p>高温の温風で衣類を加熱し、ニオイの原因菌などを除菌する衛生的なコースを搭載しています。</p></div>
+                                <div class="bg-teal-50 p-4 rounded-lg"><p class="icon text-teal-600">👕</p><h4 class="font-bold text-lg">シワケア乾燥</h4><p>乾燥終了後にドラムを回転させ、衣類のシワや絡まりを抑えます。</p></div>
+                            </div>
+                            <h3 class="text-xl font-bold mt-8 mb-4 text-teal-700 border-b-2 border-teal-200 pb-2">維持費 & スマート機能</h3>
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div class="bg-gray-100 p-4 rounded-lg">
+                                    <h4 class="font-bold text-lg mb-2">💰 1回あたりの電気代の目安</h4>
+                                    <p><span class="font-bold text-2xl text-teal-600">約59円</span> (洗濯〜乾燥時)</p>
+                                    <p class="text-xs text-gray-500">※消費電力量約1900Wh、電力料金目安単価31円/kWhで算出。</p>
+                                </div>
+                                <div class="bg-gray-100 p-4 rounded-lg">
+                                    <h4 class="font-bold text-lg mb-2">📱 スマート機能</h4>
+                                    <p>一部の上位モデルで基本的なスマホ連携が可能ですが、基本は非搭載です。</p>
+                                </div>
+                            </div>
+                            <h3 class="text-xl font-bold mt-8 mb-4 text-teal-700 border-b-2 border-teal-200 pb-2">口コミ</h3>
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div><h4 class="font-bold text-lg text-green-700">👍 良い点</h4><ul class="list-disc list-inside space-y-2 mt-2"><li>一人暮らし用の防水パンにすっきり収まるサイズ感が素晴らしい。</li><li>価格が安いので、初めての一人暮らしで費用を抑えたい場合に最適。</li><li>操作がダイヤル式で分かりやすく、説明書を読まなくても使えた。</li></ul></div>
+                                <div><h4 class="font-bold text-lg text-red-700">👎 気になる点</h4><ul class="list-disc list-inside space-y-2 mt-2"><li>タオルを乾燥させるとゴワゴワになる。柔軟剤は必須。</li><li>動作音が大きく、特に夜間はアパートだと隣室に響きそうで気を遣う。</li><li>洗濯容量が少ないので、まとめて洗濯する家庭には向かない。</li></ul></div>
+                            </div>
+                            <h3 class="text-xl font-bold mt-8 mb-4 text-teal-700 border-b-2 border-teal-200 pb-2">代表モデル紹介</h3>
+                            <div class="grid md:grid-cols-3 gap-6">
+                                <div class="bg-white rounded-lg card-shadow model-card"><img src="https://placehold.co/400x400/e2e8f0/334155?text=JW-TD90SA" alt="ハイアール JW-TD90SA" class="rounded-t-lg"><div class="p-4"><h4 class="font-bold">JW-TD90SA</h4><p class="text-sm text-gray-600">液体洗剤自動投入を搭載したモデル。</p></div></div>
+                                <div class="bg-white rounded-lg card-shadow model-card"><img src="https://placehold.co/400x400/e2e8f0/334155?text=JW-D100A" alt="ハイアール JW-D100A" class="rounded-t-lg"><div class="p-4"><h4 class="font-bold">JW-D100A</h4><p class="text-sm text-gray-600">大容量10kgでファミリー向けのモデル。</p></div></div>
+                                <div class="bg-white rounded-lg card-shadow model-card"><img src="https://placehold.co/400x400/e2e8f0/334155?text=JW-CD70A" alt="ハイアール JW-CD70A" class="rounded-t-lg"><div class="p-4"><h4 class="font-bold">JW-CD70A</h4><p class="text-sm text-gray-600">コンパクトで一人暮らしに最適なモデル。</p></div></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 3: 選び方＆購入ガイド -->
+            <section id="guide" class="main-content-section">
+                <nav id="guide-sub-nav" class="flex flex-wrap justify-center gap-4 md:gap-6 mb-8 border-b">
+                    <button data-target="recommendations" class="sub-nav-btn active pb-2">目的別おすすめランキング</button>
+                    <button data-target="special-recommendation" class="sub-nav-btn inactive pb-2">ご家庭向けプラン</button>
+                    <button data-target="how-to-buy" class="sub-nav-btn inactive pb-2">おすすめ家電量販店＆交渉術</button>
+                </nav>
+                <div id="guide-content">
+                    <div id="recommendations" class="sub-content-section active">
+                         <div class="bg-white p-6 rounded-xl card-shadow">
+                            <h2 class="text-2xl font-bold text-center mb-1 text-amber-600">目的別おすすめランキング</h2>
+                            <p class="text-center text-gray-600 mb-8">あなたが最も重視するポイントに合わせて、最適なドラム式洗濯機をランキング形式でご紹介します。</p>
+                            <div class="mb-12">
+                                <h3 class="text-xl font-bold mt-8 mb-4 text-teal-700 border-b-2 border-teal-200 pb-2">💰 価格重視の方へのおすすめ TOP3</h3>
+                                <div class="space-y-6">
+                                    <div class="flex flex-col md:flex-row items-center bg-gray-50 rounded-lg p-4 relative card-shadow"><div class="rank-badge rank-1">1位</div><img src="https://placehold.co/150x150/e2e8f0/334155?text=CDK842-W" alt="アイリスオーヤマ" class="w-32 h-32 rounded-lg object-cover mb-4 md:mb-0 md:mr-6"><div class="flex-1"><h4 class="font-bold text-lg">アイリスオーヤマ</h4><p class="font-semibold text-teal-600">おすすめ理由：</p><p class="text-sm">圧倒的な低価格が魅力。10万円前後で基本的な乾燥機能付きドラム式が手に入ります。とにかく初期費用を抑えたい、という方に最適です。</p></div></div>
+                                    <div class="flex flex-col md:flex-row items-center bg-gray-50 rounded-lg p-4 relative card-shadow"><div class="rank-badge rank-2">2位</div><img src="https://placehold.co/150x150/e2e8f0/334155?text=JW-CD70A" alt="ハイアール" class="w-32 h-32 rounded-lg object-cover mb-4 md:mb-0 md:mr-6"><div class="flex-1"><h4 class="font-bold text-lg">ハイアール</h4><p class="font-semibold text-teal-600">おすすめ理由：</p><p class="text-sm">アイリスオーヤマに次ぐ価格の安さに加え、コンパクトなモデルが多いのが特徴。一人暮らしや設置スペースが限られる場合に非常に有力な選択肢となります。</p></div></div>
+                                    <div class="flex flex-col md:flex-row items-center bg-gray-50 rounded-lg p-4 relative card-shadow"><div class="rank-badge rank-3">3位</div><img src="https://placehold.co/150x150/e2e8f0/334155?text=AQW-DX12P" alt="AQUA" class="w-32 h-32 rounded-lg object-cover mb-4 md:mb-0 md:mr-6"><div class="flex-1"><h4 class="font-bold text-lg">AQUA</h4><p class="font-semibold text-teal-600">おすすめ理由：</p><p class="text-sm">低価格帯でありながら、デザイン性が高く「まっ直ぐドラム」など独自の工夫が光ります。価格だけでなく、使いやすさや見た目にも少しこだわりたい方におすすめです。</p></div></div>
+                                </div>
+                            </div>
+                            <div class="mb-12">
+                                <h3 class="text-xl font-bold mt-8 mb-4 text-teal-700 border-b-2 border-teal-200 pb-2">🧼 性能（洗浄力）重視の方へのおすすめ TOP3</h3>
+                                <div class="space-y-6">
+                                    <div class="flex flex-col md:flex-row items-center bg-gray-50 rounded-lg p-4 relative card-shadow"><div class="rank-badge rank-1">1位</div><img src="https://placehold.co/150x150/e2e8f0/334155?text=NA-LX129CL" alt="パナソニック" class="w-32 h-32 rounded-lg object-cover mb-4 md:mb-0 md:mr-6"><div class="flex-1"><h4 class="font-bold text-lg">パナソニック</h4><p class="font-semibold text-teal-600">おすすめ理由：</p><p class="text-sm">「スゴ落ち泡洗浄」と多彩な「温水コース」の組み合わせは、泥汚れや食べこぼしなど、家庭で出がちなガンコな汚れに絶大な効果を発揮します。洗浄力で選ぶならまず検討したいメーカーです。</p></div></div>
+                                    <div class="flex flex-col md:flex-row items-center bg-gray-50 rounded-lg p-4 relative card-shadow"><div class="rank-badge rank-2">2位</div><img src="https://placehold.co/150x150/e2e8f0/334155?text=TW-127XP3L" alt="東芝" class="w-32 h-32 rounded-lg object-cover mb-4 md:mb-0 md:mr-6"><div class="flex-1"><h4 class="font-bold text-lg">東芝</h4><p class="font-semibold text-teal-600">おすすめ理由：</p><p class="text-sm">目に見えないナノサイズの泡「ウルトラファインバブル」が洗剤の力を引き出し、繊維の奥の皮脂汚れまでしっかり落とします。黄ばみやニオイが気になる方におすすめです。</p></div></div>
+                                    <div class="flex flex-col md:flex-row items-center bg-gray-50 rounded-lg p-4 relative card-shadow"><div class="rank-badge rank-3">3位</div><img src="https://placehold.co/150x150/e2e8f0/334155?text=BD-STX130JL" alt="日立" class="w-32 h-32 rounded-lg object-cover mb-4 md:mb-0 md:mr-6"><div class="flex-1"><h4 class="font-bold text-lg">日立</h4><p class="font-semibold text-teal-600">おすすめ理由：</p><p class="text-sm">大流量の「ナイアガラ洗浄」で、洗剤を衣類全体に素早く浸透させ、すすぎ性能も高いのが特徴です。洗剤残りが気になる敏感肌の方にも適しています。</p></div></div>
+                                </div>
+                            </div>
+                             <div class="mb-12">
+                                <h3 class="text-xl font-bold mt-8 mb-4 text-teal-700 border-b-2 border-teal-200 pb-2">💨 乾燥性能・仕上がり重視の方へのおすすめ TOP3</h3>
+                                <div class="space-y-6">
+                                    <div class="flex flex-col md:flex-row items-center bg-gray-50 rounded-lg p-4 relative card-shadow"><div class="rank-badge rank-1">1位</div><img src="https://placehold.co/150x150/e2e8f0/334155?text=BD-STX130JL" alt="日立" class="w-32 h-32 rounded-lg object-cover mb-4 md:mb-0 md:mr-6"><div class="flex-1"><h4 class="font-bold text-lg">日立</h4><p class="font-semibold text-teal-600">おすすめ理由：</p><p class="text-sm">代名詞の「風アイロン」機能は、高速風でシワを伸ばしながら乾燥させるため、ワイシャツなどはアイロンがけの手間がほぼ不要になります。家事の時短を追求するなら最高の選択肢です。</p></div></div>
+                                    <div class="flex flex-col md:flex-row items-center bg-gray-50 rounded-lg p-4 relative card-shadow"><div class="rank-badge rank-2">2位</div><img src="https://placehold.co/150x150/e2e8f0/334155?text=NA-LX129CL" alt="パナソニック" class="w-32 h-32 rounded-lg object-cover mb-4 md:mb-0 md:mr-6"><div class="flex-1"><h4 class="font-bold text-lg">パナソニック</h4><p class="font-semibold text-teal-600">おすすめ理由：</p><p class="text-sm">大風量の「はやふわ乾燥ヒートポンプ」は、衣類を傷めにくい低温風で、タオルなどをふんわりと仕上げるのが得意です。乾燥スピードと仕上がりの質のバランスに優れています。</p></div></div>
+                                    <div class="flex flex-col md:flex-row items-center bg-gray-50 rounded-lg p-4 relative card-shadow"><div class="rank-badge rank-3">3位</div><img src="https://placehold.co/150x150/e2e8f0/334155?text=ES-X11B" alt="シャープ" class="w-32 h-32 rounded-lg object-cover mb-4 md:mb-0 md:mr-6"><div class="flex-1"><h4 class="font-bold text-lg">シャープ</h4><p class="font-semibold text-teal-600">おすすめ理由：</p><p class="text-sm">ヒートポンプとヒーターを組み合わせた「ハイブリッド乾燥」により、省エネながらポカポカと温かい仕上がりになります。電気代を抑えつつ、カラッとした乾燥を求める方におすすめ。</p></div></div>
+                                </div>
+                            </div>
+                            <div class="mb-12">
+                                <h3 class="text-xl font-bold mt-8 mb-4 text-teal-700 border-b-2 border-teal-200 pb-2">🤫 静かさ重視の方へのおすすめ TOP3</h3>
+                                <div class="space-y-6">
+                                    <div class="flex flex-col md:flex-row items-center bg-gray-50 rounded-lg p-4 relative card-shadow"><div class="rank-badge rank-1">1位</div><img src="https://placehold.co/150x150/e2e8f0/334155?text=TW-127XP3L" alt="東芝" class="w-32 h-32 rounded-lg object-cover mb-4 md:mb-0 md:mr-6"><div class="flex-1"><h4 class="font-bold text-lg">東芝</h4><p class="font-semibold text-teal-600">おすすめ理由：</p><p class="text-sm">業界トップクラスの静音性を誇ります。独自の「低振動・低騒音設計」により、脱水時でも図書館並みの静かさを実現。マンション住まいや夜間に洗濯することが多い家庭に最適です。</p></div></div>
+                                    <div class="flex flex-col md:flex-row items-center bg-gray-50 rounded-lg p-4 relative card-shadow"><div class="rank-badge rank-2">2位</div><img src="https://placehold.co/150x150/e2e8f0/334155?text=NA-LX129CL" alt="パナソニック" class="w-32 h-32 rounded-lg object-cover mb-4 md:mb-0 md:mr-6"><div class="flex-1"><h4 class="font-bold text-lg">パナソニック</h4><p class="font-semibold text-teal-600">おすすめ理由：</p><p class="text-sm">高性能なモーターと振動を抑える工夫により、運転音が非常に静かです。特にフラッグシップモデルは、静音性にもこだわった設計になっています。</p></div></div>
+                                     <div class="flex flex-col md:flex-row items-center bg-gray-50 rounded-lg p-4 relative card-shadow"><div class="rank-badge rank-3">3位</div><img src="https://placehold.co/150x150/e2e8f0/334155?text=ES-X11B" alt="シャープ" class="w-32 h-32 rounded-lg object-cover mb-4 md:mb-0 md:mr-6"><div class="flex-1"><h4 class="font-bold text-lg">シャープ</h4><p class="font-semibold text-teal-600">おすすめ理由：</p><p class="text-sm">効率的なモーター制御技術により、運転音を低く抑えています。価格と静音性のバランスが良いモデルが多いのが特徴です。</p></div></div>
+                                </div>
+                            </div>
+                            <div class="mb-12">
+                                <h3 class="text-xl font-bold mt-8 mb-4 text-teal-700 border-b-2 border-teal-200 pb-2">🌿 省エネ重視の方へのおすすめ TOP3</h3>
+                                <div class="space-y-6">
+                                    <div class="flex flex-col md:flex-row items-center bg-gray-50 rounded-lg p-4 relative card-shadow"><div class="rank-badge rank-1">1位</div><img src="https://placehold.co/150x150/e2e8f0/334155?text=ES-X11B" alt="シャープ" class="w-32 h-32 rounded-lg object-cover mb-4 md:mb-0 md:mr-6"><div class="flex-1"><h4 class="font-bold text-lg">シャープ</h4><p class="font-semibold text-teal-600">おすすめ理由：</p><p class="text-sm">洗濯〜乾燥1回あたりの電気代が約16円と、圧倒的な省エネ性能を誇ります。効率の良い「ハイブリッド乾燥」技術により、日々のランニングコストを大幅に削減できます。</p></div></div>
+                                    <div class="flex flex-col md:flex-row items-center bg-gray-50 rounded-lg p-4 relative card-shadow"><div class="rank-badge rank-2">2位</div><img src="https://placehold.co/150x150/e2e8f0/334155?text=TW-127XP3L" alt="東芝" class="w-32 h-32 rounded-lg object-cover mb-4 md:mb-0 md:mr-6"><div class="flex-1"><h4 class="font-bold text-lg">東芝</h4><p class="font-semibold text-teal-600">おすすめ理由：</p><p class="text-sm">シャープに次ぐ約22円という優れた省エネ性を実現しています。洗浄力や静音性を高いレベルで両立させつつ、電気代も抑えたいというバランス重視の方におすすめです。</p></div></div>
+                                    <div class="flex flex-col md:flex-row items-center bg-gray-50 rounded-lg p-4 relative card-shadow"><div class="rank-badge rank-3">3位</div><img src="https://placehold.co/150x150/e2e8f0/334155?text=NA-LX129CL" alt="パナソニック" class="w-32 h-32 rounded-lg object-cover mb-4 md:mb-0 md:mr-6"><div class="flex-1"><h4 class="font-bold text-lg">パナソニック</h4><p class="font-semibold text-teal-600">おすすめ理由：</p><p class="text-sm">高い洗浄力を持ちながら、ヒートポンプ乾燥により電気代は約26円と低めに抑えられています。パワフルさと省エネを両立したい場合に良い選択肢です。</p></div></div>
+                                </div>
+                            </div>
+                            <div class="mb-12">
+                                <h3 class="text-xl font-bold mt-8 mb-4 text-teal-700 border-b-2 border-teal-200 pb-2">📏 サイズ（コンパクトさ）重視の方へのおすすめ TOP3</h3>
+                                <div class="space-y-6">
+                                    <div class="flex flex-col md:flex-row items-center bg-gray-50 rounded-lg p-4 relative card-shadow"><div class="rank-badge rank-1">1位</div><img src="https://placehold.co/150x150/e2e8f0/334155?text=ES-S7J" alt="シャープ" class="w-32 h-32 rounded-lg object-cover mb-4 md:mb-0 md:mr-6"><div class="flex-1"><h4 class="font-bold text-lg">シャープ (コンパクトモデル)</h4><p class="font-semibold text-teal-600">おすすめ理由：</p><p class="text-sm">一般的な防水パンにすっきり収まるコンパクト設計モデルのラインナップが豊富です。設置スペースの問題でドラム式を諦めていた方に、最もおすすめできるメーカーです。</p></div></div>
+                                    <div class="flex flex-col md:flex-row items-center bg-gray-50 rounded-lg p-4 relative card-shadow"><div class="rank-badge rank-2">2位</div><img src="https://placehold.co/150x150/e2e8f0/334155?text=JW-CD70A" alt="ハイアール" class="w-32 h-32 rounded-lg object-cover mb-4 md:mb-0 md:mr-6"><div class="flex-1"><h4 class="font-bold text-lg">ハイアール</h4><p class="font-semibold text-teal-600">おすすめ理由：</p><p class="text-sm">一人暮らしや二人暮らしをターゲットにしたコンパクトなモデルが多く、価格も手頃です。限られたスペースと予算の中でドラム式を導入したい場合に最適です。</p></div></div>
+                                     <div class="flex flex-col md:flex-row items-center bg-gray-50 rounded-lg p-4 relative card-shadow"><div class="rank-badge rank-3">3位</div><img src="https://placehold.co/150x150/e2e8f0/334155?text=NA-VG2800L" alt="パナソニック" class="w-32 h-32 rounded-lg object-cover mb-4 md:mb-0 md:mr-6"><div class="flex-1"><h4 class="font-bold text-lg">パナソニック (キューブル)</h4><p class="font-semibold text-teal-600">おすすめ理由：</p><p class="text-sm">四角い「キュービックフォルム」が特徴のキューブルシリーズは、デザイン性が高いだけでなく、奥行きがスリムで省スペース。洗面所のインテリアにこだわりたい方におすすめです。</p></div></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="special-recommendation" class="sub-content-section">
+                        <div class="bg-white p-6 rounded-xl card-shadow">
+                            <h2 class="text-2xl font-bold text-center mb-2 text-orange-800">ご家庭向け 特別おすすめプラン</h2>
+                            <p class="text-center text-gray-600 mb-6">小さなお子様がいらっしゃるご家庭を想定し、<br>将来の洗濯量や汚れの変化まで考えて最適な一台を厳選しました。</p>
+                            
+                            <div class="bg-orange-50 border-l-4 border-orange-500 p-4 rounded-r-lg mb-8">
+                                <h3 class="font-bold text-lg text-orange-800">今回の選定で最も重視した3つのポイント</h3>
+                                <ul class="list-disc list-inside mt-2 space-y-1 text-gray-700">
+                                    <li><span class="font-bold">圧倒的な洗浄力：</span>お子様の成長に伴う、砂・泥汚れや食べこぼしに負けないこと。</li>
+                                    <li><span class="font-bold">家族の成長に対応する大容量：</span>将来洗濯物が増えても、余裕をもって対応できること。</li>
+                                    <li><span class="font-bold">10年先を見据えた安心感：</span>お子様が中学生になるまで、安心して使い続けられる信頼性。</li>
+                                </ul>
+                            </div>
+
+                            <h3 class="text-xl font-bold mt-8 mb-4 text-center text-gray-800">【結論】 この3つの条件を最高レベルで満たす、ご家庭へのベストな一台は…</h3>
+                            
+                            <div class="border-4 border-amber-400 rounded-xl p-6 my-6 bg-white relative">
+                                <div class="text-center mb-4">
+                                    <p class="text-amber-500 font-bold">総合力No.1のお子育て世代最強モデル</p>
+                                    <h4 class="text-3xl font-bold text-teal-800">パナソニック (NA-LX129Cなど)</h4>
+                                </div>
+                                <div class="flex flex-col md:flex-row items-center">
+                                    <img src="https://placehold.co/200x200/e2e8f0/334155?text=NA-LX129CL" alt="パナソニック" class="w-48 h-48 rounded-lg object-cover mb-4 md:mb-0 md:mr-6">
+                                    <div class="flex-1">
+                                        <p class="font-semibold text-teal-600">おすすめ理由：</p>
+                                        <p>「食べこぼし」や「泥汚れ」といった、まさにこれからお子様の洗濯で直面するであろう最も手強い汚れに対し、パナソニックの<span class="font-bold text-red-600">「温水スゴ落ち泡洗浄」</span>が絶大な効果を発揮します。12kgという大容量は、お子様が大きくなり、部活動などで毎日大量の洗濯物が出るようになっても安心。国内トップメーカーとしての信頼性も高く、長期保証を付ければ、まさに「10年間の安心」を手に入れることができます。</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <h3 class="text-xl font-bold mt-8 mb-4 text-center text-gray-800">次点の選択肢と、それぞれの強み</h3>
+                            <div class="grid md:grid-cols-2 gap-6 mt-6">
+                                 <div class="bg-gray-50 rounded-lg p-4 card-shadow"><h4 class="font-bold text-lg text-center">日立 (BD-STX130Jなど)</h4><p class="text-center text-sm font-semibold text-gray-500 mb-2">「風アイロン」で家事時短を極めるモデル</p><p class="text-sm">洗浄力もさることながら、シワを伸ばして乾かす<span class="font-bold">「風アイロン」</span>は、忙しい毎日の中でアイロンがけの時間を削減してくれる強力な味方です。家事の負担を少しでも減らしたい場合に最適です。</p></div>
+                                 <div class="bg-gray-50 rounded-lg p-4 card-shadow"><h4 class="font-bold text-lg text-center">東芝 (TW-127XP3など)</h4><p class="text-center text-sm font-semibold text-gray-500 mb-2">静音性と清潔さで選ぶならこの一台</p><p class="text-sm">お子様がお昼寝している間や、夜間に洗濯機を回したい場合に、業界トップクラスの<span class="font-bold">静音性</span>が光ります。また「ウルトラファインバブル」は黄ばみを防ぐ効果も高く、長く清潔に衣類を保ちたい場合に強みを発揮します。</p></div>
+                            </div>
+
+                            <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r-lg mt-12">
+                                <h3 class="font-bold text-lg text-blue-800">【重要なポイント】10年保証について</h3>
+                                <p class="mt-2 text-gray-700">メーカーの標準保証は1年ですが、多くの大手家電量販店では<span class="font-bold">5年〜10年の延長保証</span>に加入できます。パナソニック、日立、東芝といった国内主要メーカーの最上位モデルは耐久性も高く設計されていますが、万が一に備え、購入時に長期保証に加入することを強くお勧めします。これが「10年間の安心感」に繋がる最も確実な方法です。</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="how-to-buy" class="sub-content-section">
+                        <div class="bg-white p-6 rounded-xl card-shadow">
+                            <h2 class="text-2xl font-bold text-center mb-8 text-teal-700">おすすめの家電量販店と価格交渉術</h2>
+                            
+                            <div class="mb-12">
+                                <h3 class="text-xl font-bold text-teal-700 border-b-2 border-teal-200 pb-2 mb-4">主要家電量販店5社の特徴</h3>
+                                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                    <div class="bg-gray-50 p-4 rounded-lg card-shadow"><h4 class="font-bold text-lg">ヤマダデンキ</h4><p class="font-semibold text-green-600 mt-2">メリット：</p><ul class="list-disc list-inside text-sm"><li>店舗数が多く、地方でも強い</li><li>価格交渉に積極的な店舗が多い</li></ul><p class="font-semibold text-red-600 mt-2">デメリット：</p><ul class="list-disc list-inside text-sm"><li>ポイント還元率が他社より低い場合がある</li></ul></div>
+                                    <div class="bg-gray-50 p-4 rounded-lg card-shadow"><h4 class="font-bold text-lg">ビックカメラ</h4><p class="font-semibold text-green-600 mt-2">メリット：</p><ul class="list-disc list-inside text-sm"><li>ポイント還元率が高い</li><li>駅近でアクセスが良い店舗が多い</li></ul><p class="font-semibold text-red-600 mt-2">デメリット：</p><ul class="list-disc list-inside text-sm"><li>郊外の店舗が少ない</li></ul></div>
+                                    <div class="bg-gray-50 p-4 rounded-lg card-shadow"><h4 class="font-bold text-lg">ヨドバシカメラ</h4><p class="font-semibold text-green-600 mt-2">メリット：</p><ul class="list-disc list-inside text-sm"><li>店員の専門知識が豊富</li><li>ネットストアの品揃えと配送が早い</li></ul><p class="font-semibold text-red-600 mt-2">デメリット：</p><ul class="list-disc list-inside text-sm"><li>価格交渉の難易度がやや高め</li></ul></div>
+                                    <div class="bg-gray-50 p-4 rounded-lg card-shadow"><h4 class="font-bold text-lg">ケーズデンキ</h4><p class="font-semibold text-green-600 mt-2">メリット：</p><ul class="list-disc list-inside text-sm"><li>現金値引きが基本</li><li>長期無料保証が手厚い（後述）</li></ul><p class="font-semibold text-red-600 mt-2">デメリット：</p><ul class="list-disc list-inside text-sm"><li>ポイント制度がない</li></ul></div>
+                                    <div class="bg-gray-50 p-4 rounded-lg card-shadow"><h4 class="font-bold text-lg">ジョーシン</h4><p class="font-semibold text-green-600 mt-2">メリット：</p><ul class="list-disc list-inside text-sm"><li>関西地盤で地域密着</li><li>キッズランド併設など家族向け</li></ul><p class="font-semibold text-red-600 mt-2">デメリット：</p><ul class="list-disc list-inside text-sm"><li>全国的な店舗数は少なめ</li></ul></div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <h3 class="text-xl font-bold text-teal-700 border-b-2 border-teal-200 pb-2 mb-4">初心者でもできる！価格交渉の3ステップ</h3>
+                                <div class="space-y-4">
+                                    <div class="bg-blue-50 p-4 rounded-lg"><h4 class="font-bold text-lg text-blue-800">ステップ1：【事前準備】徹底的にリサーチする</h4><p class="text-sm mt-2">まずはネットで希望モデルの価格を調べましょう。Amazon、楽天市場などに加え、「ヤマダウェブコム」などお店自身のネット価格もスクリーンショットなどで保存しておくと、交渉の武器になります。<br><span class="font-bold text-red-600">【注意！】</span>価格.comの最安値には、保証が不明瞭なサイトも含まれます。聞いたことのないお店は避け、信頼できる大手量販店のオンライン価格を参考にしましょう。</p></div>
+                                    <div class="bg-blue-50 p-4 rounded-lg"><h4 class="font-bold text-lg text-blue-800">ステップ2：【タイミング】最適な時期を狙う</h4><p class="text-sm mt-2">家電が安くなりやすい時期を狙うのが賢い方法です。</p><ul class="list-disc list-inside text-sm mt-2 space-y-1"><li><span class="font-bold">モデルチェンジ時期（8月〜9月）：</span>新型発売前に、旧型モデルが「型落ち品」として大幅に値下がりします。機能にこだわりがなければ最大の狙い目です。</li><li><span class="font-bold">決算期（3月、9月）：</span>お店が売上目標を達成するために、価格交渉に応じやすくなります。</li><li><span class="font-bold">週末の夕方：</span>週末はセールが多く、夕方は一日の売上目標達成のため、店員さんが交渉に応じてくれやすい時間帯です。</li></ul></div>
+                                    <div class="bg-yellow-50 border-l-4 border-yellow-500 p-4 rounded-r-lg my-4">
+                                        <h4 class="font-bold text-lg text-yellow-800">【重要注意】パナソニックと日立の価格交渉について</h4>
+                                        <p class="text-sm mt-2">この2社は、商品の価値を保つためにメーカーが販売価格を決める<span class="font-bold">「指定価格（建値制）」</span>を導入しています。そのため、<span class="font-bold text-red-600">基本的に店舗での直接の値引きはできません。</span>ただし、ポイント還元率アップや、他の商品とセットで購入する際の「まとめ買い値引き」など、交渉の余地が残されている場合もあります。</p>
+                                    </div>
+                                    <div class="bg-blue-50 p-4 rounded-lg"><h4 class="font-bold text-lg text-blue-800">ステップ3：【実践】丁寧かつ具体的に交渉する</h4><p class="text-sm mt-2">店員さんに声をかけ、購入意欲があることを伝えた上で、「〇〇（他店の名前）のネットでは△△円なのですが、もう少しお安くなりませんか？」と具体的に切り出しましょう。その際、リサーチしたスマホ画面を見せるのが効果的です。「今日ここで決めたい」という姿勢を見せるのもポイント。高圧的な態度はNGです！</p></div>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-teal-50 border-l-4 border-teal-500 p-6 rounded-r-lg mt-12">
+                                <h3 class="font-bold text-xl text-teal-800">【ネスタの最終結論】 長期的な安心を買うならこのお店！</h3>
+                                <p class="mt-4 text-gray-700 text-center">様々な量販店がありますが、<br>私、ネスタが特におすすめするのは…</p>
+                                <p class="text-center font-bold text-3xl md:text-4xl text-red-600 mt-2">「ケーズデンキ」です。</p>
+                                <p class="mt-4 font-semibold text-teal-700">おすすめ理由：</p>
+                                <p class="mt-1 text-gray-700">最大の理由は、<span class="font-bold">唯一10年間（※）100％の長期無料保証</span>をつけてくれるからです。他の量販店の保証は、年数が経つにつれて保証額が減っていくのが一般的ですが、ケーズデンキは10年後でも購入金額までしっかり保証してくれます。高価なドラム式洗濯機だからこそ、この「万が一の時の安心感」は、数万円の値引き以上に価値があると言えるでしょう。</p>
+                                <p class="text-xs mt-2 text-gray-500">※10年保証は指定金額以上の製品など条件がある場合があります。購入時にご確認ください。</p>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
     </div>
-  </header>
+    
+    <footer class="text-center p-4 mt-8 bg-gray-100">
+        <p class="text-xs text-gray-500">&copy; 2025 ドラム式洗濯機おすすめガイド！. 本サイトの情報は一般的な参考情報であり、購入を保証するものではありません。</p>
+    </footer>
 
-  <main class="article stack-24">
-    <!-- ヒーロー（任意：画像差し替え可） -->
-    <section class="hero" style="border-radius:18px; overflow:hidden;">
-      <!-- 16:9 の .webp を想定。なければ hero を丸ごと削除してOK -->
-      <img src="./assets/img/hero-wm.webp" alt="洗濯機まとめ">
-      <div class="hero-text">
-        <h1>洗濯機のまとめ</h1>
-        <p class="lead">方式の違い・選び方・価格帯・おすすめを1ページで。</p>
-      </div>
-    </section>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const mainNavButtons = document.querySelectorAll('.main-nav-btn');
+        const mainContentSections = document.querySelectorAll('.main-content-section');
+        const manufacturerSubNav = document.getElementById('manufacturer-sub-nav');
+        const manufacturerContent = document.getElementById('manufacturer-content');
+        const guideSubNav = document.getElementById('guide-sub-nav');
+        const guideContent = document.getElementById('guide-content');
 
-    <!-- 概要KPI -->
-    <section class="kpi">
-      <div class="card">
-        <h3>結論（ざっくり）</h3>
-        <p>省スペース＆時短なら<strong>ドラム式</strong>、コスパ＆乾き重視なら<strong>縦型</strong>。設置寸法と電気代/乾燥性能で決める。</p>
-      </div>
-      <div class="card">
-        <h3>設置の要点</h3>
-        <p>幅×奥行×高さ＋ドア開閉の余裕。防水パン寸法/蛇口高さ/排水位置を事前確認。</p>
-      </div>
-    </section>
+        mainNavButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const targetId = button.dataset.target;
+                mainNavButtons.forEach(btn => btn.classList.replace('active', 'inactive'));
+                button.classList.replace('inactive', 'active');
+                mainContentSections.forEach(section => section.classList.toggle('active', section.id === targetId));
+            });
+        });
 
-    <!-- 総合比較（レーダー & 価格帯バー） -->
-    <section class="section stack-16">
-      <h2>総合性能比較 <span class="badge">切替可</span></h2>
-      <p class="muted">ボタンでメーカー表示を切替できます。ホバーでスコア表示。</p>
-
-      <div class="switcher" id="radar-controls">
-        <button class="chip active" data-company="all">全て</button>
-        <button class="chip" data-company="panasonic">パナソニック</button>
-        <button class="chip" data-company="hitachi">日立</button>
-        <button class="chip" data-company="toshiba">東芝</button>
-        <button class="chip" data-company="sharp">シャープ</button>
-        <button class="chip" data-company="aqua">AQUA</button>
-        <button class="chip" data-company="irisohyama">アイリス</button>
-        <button class="chip" data-company="haier">ハイアール</button>
-      </div>
-
-      <div class="chart-wrap"><canvas id="radarChart"></canvas></div>
-
-      <h2 class="subhead">価格帯比較</h2>
-      <p class="muted">主力モデルのおおよその価格レンジ（万円）。</p>
-      <div class="chart-wrap" style="height:380px;"><canvas id="priceChart"></canvas></div>
-    </section>
-
-    <!-- メーカー別（例：パナ/日立/東芝…のテキストは既存を踏襲） -->
-    <section class="section stack-16">
-      <h2>メーカー別メモ <span class="pill">簡易ダイジェスト</span></h2>
-
-      <div class="grid-3">
-        <div class="card">
-          <h3>Panasonic</h3>
-          <ul>
-            <li>スゴ落ち泡＋温水で洗浄力◎</li>
-            <li>ヒートポンプ乾燥で仕上がりふんわり</li>
-            <li>電気代目安：洗乾 約26円/回（目安）</li>
-          </ul>
-        </div>
-        <div class="card">
-          <h3>HITACHI</h3>
-          <ul>
-            <li>ナイアガラ洗浄＋風アイロン</li>
-            <li>シワ伸ばし乾燥で時短</li>
-            <li>電気代目安：洗乾 約28円/回（目安）</li>
-          </ul>
-        </div>
-        <div class="card">
-          <h3>TOSHIBA</h3>
-          <ul>
-            <li>ウルトラファインバブルで皮脂に強い</li>
-            <li>静音・低振動に定評</li>
-            <li>電気代目安：洗乾 約22円/回（目安）</li>
-          </ul>
-        </div>
-      </div>
-
-      <h3 class="subhead">代表モデル（ダミー画像は .webp に差し替えてください）</h3>
-      <div class="grid-3">
-        <div class="card model-card">
-          <img src="./assets/img/model-panasonic.webp" alt="Panasonic モデル">
-          <div class="body">
-            <strong>NA-LX129CL/R</strong>
-            <p class="muted">最上位。温水×泡×ヒートポンプ。</p>
-          </div>
-        </div>
-        <div class="card model-card">
-          <img src="./assets/img/model-hitachi.webp" alt="HITACHI モデル">
-          <div class="body">
-            <strong>BD-STX130J</strong>
-            <p class="muted">風アイロンでシワ少なく乾燥。</p>
-          </div>
-        </div>
-        <div class="card model-card">
-          <img src="./assets/img/model-toshiba.webp" alt="TOSHIBA モデル">
-          <div class="body">
-            <strong>TW-127XP3</strong>
-            <p class="muted">静音性と泡での洗浄が強み。</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- 選び方 -->
-    <section class="section stack-16">
-      <h2>選び方のチェックリスト</h2>
-      <ul class="stack-12">
-        <li>設置寸法（防水パン/蛇口/排水）・ドア開閉方向</li>
-        <li>容量：単身 5〜7kg / 2人 7〜9kg / 家族 9〜12kg</li>
-        <li>乾燥方式（ヒートポンプ＞ヒーター＞簡易）・静音性</li>
-        <li>お手入れ（フィルター・糸くず・乾燥ダクト）</li>
-        <li>電気代と時間（標準コースの目安）</li>
-      </ul>
-
-      <h3 class="subhead">候補比較テンプレ（コピペ）</h3>
-      <pre><code>型番 / 方式（ドラム/縦型）/ 容量（洗/乾）/ 本体寸法（幅×奥行×高さ）
-乾燥方式 / 標準洗濯〜乾燥時間 / 目安電気代 / 静音 / 特徴</code></pre>
-    </section>
-
-    <p><a class="btn" href="https://lasarmas-la.github.io/present/">← プレゼン一覧へ戻る</a></p>
-  </main>
-
-  <!-- 共通フッター -->
-  <footer class="site-footer">
-    <div class="footer-inner">
-      <img class="footer-banner" src="./assets/img/footer-banner.webp" alt="">
-      <div class="footer-links">
-        <a href="https://lasarmas-la.github.io/about.html">About</a>
-        <a href="https://lasarmas-la.github.io/contact.html">Contact</a>
-      </div>
-      <small>© <span id="year"></span> LasArmas.</small>
-    </div>
-  </footer>
-
-  <script>
-    document.getElementById('year').textContent = new Date().getFullYear();
-
-    // ===== データ定義（スコア/価格帯） =====
-    const appData = {
-      panasonic: { name: 'パナソニック', scores: [4.8, 4.0, 4.5, 4.2, 4.6], price: [25, 35] },
-      hitachi:    { name: '日立',       scores: [4.2, 4.5, 4.8, 4.0, 4.4], price: [24, 33] },
-      toshiba:    { name: '東芝',       scores: [4.5, 4.6, 3.8, 4.8, 4.0], price: [22, 30] },
-      sharp:      { name: 'シャープ',   scores: [3.8, 4.2, 4.0, 4.5, 4.8], price: [20, 28] },
-      aqua:       { name: 'AQUA',       scores: [4.0, 4.7, 3.7, 4.0, 4.3], price: [15, 25] },
-      irisohyama: { name: 'アイリス',   scores: [3.5, 5.0, 3.2, 3.5, 3.0], price: [10, 18] },
-      haier:      { name: 'ハイアール', scores: [3.6, 4.9, 3.3, 3.6, 3.2], price: [12, 20] },
-      labels: ['洗浄力', '価格', '乾燥機能', '静音性', '独自機能']
-    };
-
-    // ===== サイトの色（CSS変数）をChart.jsに反映 =====
-    function getThemeColors() {
-      const rs = getComputedStyle(document.documentElement);
-      const bg = rs.getPropertyValue('--bg').trim() || '#0b0d12';
-      const ink = rs.getPropertyValue('--ink').trim() || '#e9f0ff';
-      const grid = '#233047';
-      const acc = rs.getPropertyValue('--acc').trim() || '#7cc4ff';
-      // 複数系列用パレット
-      const palette = [
-        '#22c55e', '#ef4444', '#2563eb', '#f59e0b',
-        '#14b8a6', '#7c3aed', '#db2777'
-      ];
-      return { bg, ink, grid, acc, palette };
-    }
-
-    const { ink, grid, palette } = getThemeColors();
-
-    // レーダー用データセット
-    const allDatasets = Object.values(appData)
-      .filter(d => d.scores)
-      .map((brand, i) => ({
-        label: brand.name,
-        data: brand.scores,
-        backgroundColor: hex2rgba(palette[i % palette.length], 0.2),
-        borderColor: palette[i % palette.length],
-        pointBackgroundColor: palette[i % palette.length],
-        pointBorderColor: '#000'
-      }));
-
-    function hex2rgba(hex, a){
-      // supports #rrggbb
-      const m = hex.replace('#','');
-      const r = parseInt(m.substring(0,2),16);
-      const g = parseInt(m.substring(2,4),16);
-      const b = parseInt(m.substring(4,6),16);
-      return `rgba(${r},${g},${b},${a})`;
-    }
-
-    // ===== レーダーチャート =====
-    const radarCtx = document.getElementById('radarChart').getContext('2d');
-    const radarChart = new Chart(radarCtx, {
-      type: 'radar',
-      data: { labels: appData.labels, datasets: allDatasets },
-      options: {
-        maintainAspectRatio: false,
-        scales: {
-          r: {
-            grid: { color: grid },
-            angleLines: { color: grid },
-            pointLabels: { color: ink, font: { size: 12 }},
-            suggestedMin: 0, suggestedMax: 5, ticks: { stepSize: 1, color: ink, backdropColor: 'transparent' }
-          }
-        },
-        plugins: {
-          legend: { position: 'top', labels: { color: ink }},
-          tooltip: { callbacks: { label: (c) => `${c.dataset.label}: ${c.raw}` }}
+        function setupSubNav(navContainer, contentContainer) {
+            if (!navContainer) return;
+            const subNavButtons = navContainer.querySelectorAll('.sub-nav-btn');
+            const subContentSections = contentContainer.querySelectorAll('.sub-content-section');
+            subNavButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const targetId = button.dataset.target;
+                    subNavButtons.forEach(btn => btn.classList.replace('active', 'inactive'));
+                    button.classList.replace('inactive', 'active');
+                    subContentSections.forEach(section => section.classList.toggle('active', section.id === targetId));
+                });
+            });
         }
-      }
-    });
+        setupSubNav(manufacturerSubNav, manufacturerContent);
+        setupSubNav(guideSubNav, guideContent);
 
-    // 切替ボタン
-    const radarControls = document.getElementById('radar-controls');
-    const keyMap = { panasonic:'パナソニック', hitachi:'日立', toshiba:'東芝', sharp:'シャープ', aqua:'AQUA', irisohyama:'アイリス', haier:'ハイアール' };
-    radarControls.querySelectorAll('.chip').forEach(btn=>{
-      btn.addEventListener('click', ()=>{
-        radarControls.querySelectorAll('.chip').forEach(b=>b.classList.remove('active'));
-        btn.classList.add('active');
-        const k = btn.dataset.company;
-        radarChart.data.datasets = (k === 'all')
-          ? allDatasets
-          : [ allDatasets.find(ds => ds.label === keyMap[k]) ].filter(Boolean);
-        radarChart.update();
-      });
-    });
-
-    // ===== 価格帯（横棒） =====
-    const priceCtx = document.getElementById('priceChart').getContext('2d');
-    const brands = Object.values(appData).filter(d => d.price);
-    new Chart(priceCtx, {
-      type: 'bar',
-      data: {
-        labels: brands.map(b => b.name),
-        datasets: [{
-          label: '価格帯 (万円)',
-          data: brands.map(b => ({x: b.price[1], xMin: b.price[0], xMax: b.price[1]})), // 表示は最大値、ツールチップで範囲
-          backgroundColor: palette.map((c,i)=>hex2rgba(palette[i%palette.length], 0.6)),
-          borderColor: palette,
-          borderWidth: 1,
-          borderSkipped: false
-        }]
-      },
-      options: {
-        maintainAspectRatio: false,
-        indexAxis: 'y',
-        scales: {
-          x: { beginAtZero: true, title: { display: true, text: '価格 (万円)', color: ink }, ticks: { color: ink }, grid: { color: grid } },
-          y: { ticks: { color: ink }, grid: { color: grid } }
-        },
-        plugins: {
-          legend: { display: false },
-          tooltip: {
-            callbacks: {
-              label: (ctx) => {
-                const i = ctx.dataIndex;
-                const [min, max] = brands[i].price;
-                return `${min}万円 ~ ${max}万円`;
-              }
-            }
-          }
+        const appData = {
+            panasonic: { name: 'パナソニック', scores: [4.8, 4.0, 4.5, 4.2, 4.6], price: [25, 35] },
+            hitachi: { name: '日立', scores: [4.2, 4.5, 4.8, 4.0, 4.4], price: [24, 33] },
+            toshiba: { name: '東芝', scores: [4.5, 4.6, 3.8, 4.8, 4.0], price: [22, 30] },
+            sharp: { name: 'シャープ', scores: [3.8, 4.2, 4.0, 4.5, 4.8], price: [20, 28] },
+            aqua: { name: 'AQUA', scores: [4.0, 4.7, 3.7, 4.0, 4.3], price: [15, 25] },
+            irisohyama: { name: 'アイリスオーヤマ', scores: [3.5, 5.0, 3.2, 3.5, 3.0], price: [10, 18] },
+            haier: { name: 'ハイアール', scores: [3.6, 4.9, 3.3, 3.6, 3.2], price: [12, 20] },
+            labels: ['洗浄力', '価格', '乾燥機能', '静音性', '独自機能']
+        };
+        
+        let radarChartInstance;
+        const colors = [ 'rgba(22, 163, 74, {a})', 'rgba(239, 68, 68, {a})', 'rgba(37, 99, 235, {a})', 'rgba(245, 158, 11, {a})', 'rgba(20, 184, 166, {a})', 'rgba(124, 58, 237, {a})', 'rgba(219, 39, 119, {a})'];
+        const allDatasets = Object.values(appData).filter(d => d.scores).map((brand, index) => ({
+            label: brand.name, data: brand.scores, backgroundColor: colors[index].replace('{a}', '0.2'),
+            borderColor: colors[index].replace('{a}', '1'), pointBackgroundColor: colors[index].replace('{a}', '1')
+        }));
+        
+        const radarCtx = document.getElementById('radarChart')?.getContext('2d');
+        if (radarCtx) {
+            radarChartInstance = new Chart(radarCtx, { type: 'radar', data: { labels: appData.labels, datasets: allDatasets },
+                options: { maintainAspectRatio: false, scales: { r: { angleLines: { color: 'rgba(0,0,0,0.1)' }, grid: { color: 'rgba(0,0,0,0.1)' }, pointLabels: { font: { size: 12 } }, suggestedMin: 0, suggestedMax: 5, ticks: { stepSize: 1, backdropColor: 'rgba(255,255,255,0.75)' } } },
+                plugins: { legend: { position: 'top' }, tooltip: { callbacks: { label: function(c) { return `${c.dataset.label}: ${c.raw}`; } } } } }
+            });
         }
-      }
+        
+        const radarControls = document.getElementById('radar-controls');
+        if (radarControls && radarChartInstance) {
+            const controlButtons = radarControls.querySelectorAll('.radar-control-btn');
+            const companyKeys = { panasonic: 'パナソニック', hitachi: '日立', toshiba: '東芝', sharp: 'シャープ', aqua: 'AQUA', irisohyama: 'アイリスオーヤマ', haier: 'ハイアール' };
+            controlButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const companyKey = button.dataset.company;
+                    controlButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                    radarChartInstance.data.datasets = companyKey === 'all' ? allDatasets : [allDatasets.find(ds => ds.label === companyKeys[companyKey])].filter(Boolean);
+                    radarChartInstance.update();
+                });
+            });
+        }
+
+        const priceCtx = document.getElementById('priceChart')?.getContext('2d');
+        if (priceCtx) {
+            const brands = Object.values(appData).filter(d => d.price);
+            new Chart(priceCtx, { type: 'bar', data: { labels: brands.map(b => b.name),
+                datasets: [{ label: '価格帯 (万円)', data: brands.map(b => b.price), backgroundColor: colors.map(c => c.replace('{a}', '0.6')),
+                borderColor: colors.map(c => c.replace('{a}', '1')), borderWidth: 1, borderSkipped: false, }]
+                },
+                options: { maintainAspectRatio: false, indexAxis: 'y', scales: { x: { beginAtZero: true, title: { display: true, text: '価格 (万円)' } } },
+                plugins: { legend: { display: false }, tooltip: { callbacks: { label: function(c) { const v = c.raw; return `${v[0]}万円 ~ ${v[1]}万円`; } } } } }
+            });
+        }
     });
-  </script>
+</script>
 </body>
 </html>
+
