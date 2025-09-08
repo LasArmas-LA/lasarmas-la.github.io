@@ -1,0 +1,335 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>洗濯機のまとめ | Presentations</title>
+
+  <!-- 既存サイトの共通スタイル -->
+  <link rel="stylesheet" href="./assets/css/style.css" />
+
+  <!-- Chart.js（グラフ用） -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    /* --- このページ専用の軽い追加スタイル（既存CSSと馴染む） --- */
+    .article { width:min(100% - 32px, 1000px); margin:24px auto 48px; }
+    .muted { color: var(--muted); }
+    .grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+    .grid-3 { display:grid; grid-template-columns:repeat(3, 1fr); gap:16px; }
+    .stack-12 { display:grid; gap:12px; }
+    .stack-16 { display:grid; gap:16px; }
+    .stack-24 { display:grid; gap:24px; }
+    .lead { font-size:1.05rem; color:var(--muted); }
+
+    .kpi { display:grid; grid-template-columns:repeat(auto-fit, minmax(260px,1fr)); gap:16px; }
+    .kpi .card { background:#0d121b; border:1px solid #1b2230; border-radius:16px; padding:16px; }
+
+    .section { background:#0d121b; border:1px solid #1b2230; border-radius:16px; padding:18px; }
+    .section h2 { margin:0 0 8px; }
+
+    .badge { display:inline-block; padding:2px 8px; border-radius:9999px; background:#162031; color:var(--ink); border:1px solid #1b2230; font-size:.85rem; }
+    .pill { display:inline-block; padding:4px 10px; border-radius:9999px; background:#102138; color:#a7d1ff; border:1px solid #1b2230; font-size:.9rem; }
+
+    .model-card img { aspect-ratio:1 / 1; object-fit:cover; background:#0b0f17; border-radius:12px 12px 0 0; }
+    .model-card .body { padding:12px; }
+
+    /* グラフ入れ物（レスポンシブ） */
+    .chart-wrap { position:relative; width:100%; height:360px; }
+    @media (min-width: 768px) { .chart-wrap{ height:440px; } }
+
+    /* 小見出し装飾 */
+    .subhead { margin-top:18px; padding-bottom:8px; border-bottom:1px solid #1b2230; }
+
+    /* 表示切替ボタン */
+    .switcher { display:flex; flex-wrap:wrap; gap:8px; }
+    .chip { padding:6px 12px; border-radius:9999px; border:1px solid #254064; background:#0e1623; color:#cde6ff; cursor:pointer; font-size:.9rem; }
+    .chip.active, .chip:hover { background:#1b90ff; color:#fff; border-color:#1b90ff; }
+
+    /* レスポンシブ */
+    @media (max-width: 800px){
+      .grid-2, .grid-3 { grid-template-columns:1fr; }
+    }
+  </style>
+</head>
+<body>
+  <!-- 共通ヘッダー -->
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="https://lasarmas-la.github.io/">
+        <!-- ロゴは .webp を想定 -->
+        <img src="./assets/img/logo.webp" alt="LasArmas">
+      </a>
+      <nav class="nav">
+        <a href="https://lasarmas-la.github.io/">Home</a>
+        <a href="https://lasarmas-la.github.io/games/">Games</a>
+        <a href="https://lasarmas-la.github.io/blog/">Blog</a>
+        <a href="https://lasarmas-la.github.io/present/">Presentations</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="article stack-24">
+    <!-- ヒーロー（任意：画像差し替え可） -->
+    <section class="hero" style="border-radius:18px; overflow:hidden;">
+      <!-- 16:9 の .webp を想定。なければ hero を丸ごと削除してOK -->
+      <img src="./assets/img/hero-wm.webp" alt="洗濯機まとめ">
+      <div class="hero-text">
+        <h1>洗濯機のまとめ</h1>
+        <p class="lead">方式の違い・選び方・価格帯・おすすめを1ページで。</p>
+      </div>
+    </section>
+
+    <!-- 概要KPI -->
+    <section class="kpi">
+      <div class="card">
+        <h3>結論（ざっくり）</h3>
+        <p>省スペース＆時短なら<strong>ドラム式</strong>、コスパ＆乾き重視なら<strong>縦型</strong>。設置寸法と電気代/乾燥性能で決める。</p>
+      </div>
+      <div class="card">
+        <h3>設置の要点</h3>
+        <p>幅×奥行×高さ＋ドア開閉の余裕。防水パン寸法/蛇口高さ/排水位置を事前確認。</p>
+      </div>
+    </section>
+
+    <!-- 総合比較（レーダー & 価格帯バー） -->
+    <section class="section stack-16">
+      <h2>総合性能比較 <span class="badge">切替可</span></h2>
+      <p class="muted">ボタンでメーカー表示を切替できます。ホバーでスコア表示。</p>
+
+      <div class="switcher" id="radar-controls">
+        <button class="chip active" data-company="all">全て</button>
+        <button class="chip" data-company="panasonic">パナソニック</button>
+        <button class="chip" data-company="hitachi">日立</button>
+        <button class="chip" data-company="toshiba">東芝</button>
+        <button class="chip" data-company="sharp">シャープ</button>
+        <button class="chip" data-company="aqua">AQUA</button>
+        <button class="chip" data-company="irisohyama">アイリス</button>
+        <button class="chip" data-company="haier">ハイアール</button>
+      </div>
+
+      <div class="chart-wrap"><canvas id="radarChart"></canvas></div>
+
+      <h2 class="subhead">価格帯比較</h2>
+      <p class="muted">主力モデルのおおよその価格レンジ（万円）。</p>
+      <div class="chart-wrap" style="height:380px;"><canvas id="priceChart"></canvas></div>
+    </section>
+
+    <!-- メーカー別（例：パナ/日立/東芝…のテキストは既存を踏襲） -->
+    <section class="section stack-16">
+      <h2>メーカー別メモ <span class="pill">簡易ダイジェスト</span></h2>
+
+      <div class="grid-3">
+        <div class="card">
+          <h3>Panasonic</h3>
+          <ul>
+            <li>スゴ落ち泡＋温水で洗浄力◎</li>
+            <li>ヒートポンプ乾燥で仕上がりふんわり</li>
+            <li>電気代目安：洗乾 約26円/回（目安）</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>HITACHI</h3>
+          <ul>
+            <li>ナイアガラ洗浄＋風アイロン</li>
+            <li>シワ伸ばし乾燥で時短</li>
+            <li>電気代目安：洗乾 約28円/回（目安）</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>TOSHIBA</h3>
+          <ul>
+            <li>ウルトラファインバブルで皮脂に強い</li>
+            <li>静音・低振動に定評</li>
+            <li>電気代目安：洗乾 約22円/回（目安）</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3 class="subhead">代表モデル（ダミー画像は .webp に差し替えてください）</h3>
+      <div class="grid-3">
+        <div class="card model-card">
+          <img src="./assets/img/model-panasonic.webp" alt="Panasonic モデル">
+          <div class="body">
+            <strong>NA-LX129CL/R</strong>
+            <p class="muted">最上位。温水×泡×ヒートポンプ。</p>
+          </div>
+        </div>
+        <div class="card model-card">
+          <img src="./assets/img/model-hitachi.webp" alt="HITACHI モデル">
+          <div class="body">
+            <strong>BD-STX130J</strong>
+            <p class="muted">風アイロンでシワ少なく乾燥。</p>
+          </div>
+        </div>
+        <div class="card model-card">
+          <img src="./assets/img/model-toshiba.webp" alt="TOSHIBA モデル">
+          <div class="body">
+            <strong>TW-127XP3</strong>
+            <p class="muted">静音性と泡での洗浄が強み。</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 選び方 -->
+    <section class="section stack-16">
+      <h2>選び方のチェックリスト</h2>
+      <ul class="stack-12">
+        <li>設置寸法（防水パン/蛇口/排水）・ドア開閉方向</li>
+        <li>容量：単身 5〜7kg / 2人 7〜9kg / 家族 9〜12kg</li>
+        <li>乾燥方式（ヒートポンプ＞ヒーター＞簡易）・静音性</li>
+        <li>お手入れ（フィルター・糸くず・乾燥ダクト）</li>
+        <li>電気代と時間（標準コースの目安）</li>
+      </ul>
+
+      <h3 class="subhead">候補比較テンプレ（コピペ）</h3>
+      <pre><code>型番 / 方式（ドラム/縦型）/ 容量（洗/乾）/ 本体寸法（幅×奥行×高さ）
+乾燥方式 / 標準洗濯〜乾燥時間 / 目安電気代 / 静音 / 特徴</code></pre>
+    </section>
+
+    <p><a class="btn" href="https://lasarmas-la.github.io/present/">← プレゼン一覧へ戻る</a></p>
+  </main>
+
+  <!-- 共通フッター -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <img class="footer-banner" src="./assets/img/footer-banner.webp" alt="">
+      <div class="footer-links">
+        <a href="https://lasarmas-la.github.io/about.html">About</a>
+        <a href="https://lasarmas-la.github.io/contact.html">Contact</a>
+      </div>
+      <small>© <span id="year"></span> LasArmas.</small>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // ===== データ定義（スコア/価格帯） =====
+    const appData = {
+      panasonic: { name: 'パナソニック', scores: [4.8, 4.0, 4.5, 4.2, 4.6], price: [25, 35] },
+      hitachi:    { name: '日立',       scores: [4.2, 4.5, 4.8, 4.0, 4.4], price: [24, 33] },
+      toshiba:    { name: '東芝',       scores: [4.5, 4.6, 3.8, 4.8, 4.0], price: [22, 30] },
+      sharp:      { name: 'シャープ',   scores: [3.8, 4.2, 4.0, 4.5, 4.8], price: [20, 28] },
+      aqua:       { name: 'AQUA',       scores: [4.0, 4.7, 3.7, 4.0, 4.3], price: [15, 25] },
+      irisohyama: { name: 'アイリス',   scores: [3.5, 5.0, 3.2, 3.5, 3.0], price: [10, 18] },
+      haier:      { name: 'ハイアール', scores: [3.6, 4.9, 3.3, 3.6, 3.2], price: [12, 20] },
+      labels: ['洗浄力', '価格', '乾燥機能', '静音性', '独自機能']
+    };
+
+    // ===== サイトの色（CSS変数）をChart.jsに反映 =====
+    function getThemeColors() {
+      const rs = getComputedStyle(document.documentElement);
+      const bg = rs.getPropertyValue('--bg').trim() || '#0b0d12';
+      const ink = rs.getPropertyValue('--ink').trim() || '#e9f0ff';
+      const grid = '#233047';
+      const acc = rs.getPropertyValue('--acc').trim() || '#7cc4ff';
+      // 複数系列用パレット
+      const palette = [
+        '#22c55e', '#ef4444', '#2563eb', '#f59e0b',
+        '#14b8a6', '#7c3aed', '#db2777'
+      ];
+      return { bg, ink, grid, acc, palette };
+    }
+
+    const { ink, grid, palette } = getThemeColors();
+
+    // レーダー用データセット
+    const allDatasets = Object.values(appData)
+      .filter(d => d.scores)
+      .map((brand, i) => ({
+        label: brand.name,
+        data: brand.scores,
+        backgroundColor: hex2rgba(palette[i % palette.length], 0.2),
+        borderColor: palette[i % palette.length],
+        pointBackgroundColor: palette[i % palette.length],
+        pointBorderColor: '#000'
+      }));
+
+    function hex2rgba(hex, a){
+      // supports #rrggbb
+      const m = hex.replace('#','');
+      const r = parseInt(m.substring(0,2),16);
+      const g = parseInt(m.substring(2,4),16);
+      const b = parseInt(m.substring(4,6),16);
+      return `rgba(${r},${g},${b},${a})`;
+    }
+
+    // ===== レーダーチャート =====
+    const radarCtx = document.getElementById('radarChart').getContext('2d');
+    const radarChart = new Chart(radarCtx, {
+      type: 'radar',
+      data: { labels: appData.labels, datasets: allDatasets },
+      options: {
+        maintainAspectRatio: false,
+        scales: {
+          r: {
+            grid: { color: grid },
+            angleLines: { color: grid },
+            pointLabels: { color: ink, font: { size: 12 }},
+            suggestedMin: 0, suggestedMax: 5, ticks: { stepSize: 1, color: ink, backdropColor: 'transparent' }
+          }
+        },
+        plugins: {
+          legend: { position: 'top', labels: { color: ink }},
+          tooltip: { callbacks: { label: (c) => `${c.dataset.label}: ${c.raw}` }}
+        }
+      }
+    });
+
+    // 切替ボタン
+    const radarControls = document.getElementById('radar-controls');
+    const keyMap = { panasonic:'パナソニック', hitachi:'日立', toshiba:'東芝', sharp:'シャープ', aqua:'AQUA', irisohyama:'アイリス', haier:'ハイアール' };
+    radarControls.querySelectorAll('.chip').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        radarControls.querySelectorAll('.chip').forEach(b=>b.classList.remove('active'));
+        btn.classList.add('active');
+        const k = btn.dataset.company;
+        radarChart.data.datasets = (k === 'all')
+          ? allDatasets
+          : [ allDatasets.find(ds => ds.label === keyMap[k]) ].filter(Boolean);
+        radarChart.update();
+      });
+    });
+
+    // ===== 価格帯（横棒） =====
+    const priceCtx = document.getElementById('priceChart').getContext('2d');
+    const brands = Object.values(appData).filter(d => d.price);
+    new Chart(priceCtx, {
+      type: 'bar',
+      data: {
+        labels: brands.map(b => b.name),
+        datasets: [{
+          label: '価格帯 (万円)',
+          data: brands.map(b => ({x: b.price[1], xMin: b.price[0], xMax: b.price[1]})), // 表示は最大値、ツールチップで範囲
+          backgroundColor: palette.map((c,i)=>hex2rgba(palette[i%palette.length], 0.6)),
+          borderColor: palette,
+          borderWidth: 1,
+          borderSkipped: false
+        }]
+      },
+      options: {
+        maintainAspectRatio: false,
+        indexAxis: 'y',
+        scales: {
+          x: { beginAtZero: true, title: { display: true, text: '価格 (万円)', color: ink }, ticks: { color: ink }, grid: { color: grid } },
+          y: { ticks: { color: ink }, grid: { color: grid } }
+        },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: (ctx) => {
+                const i = ctx.dataIndex;
+                const [min, max] = brands[i].price;
+                return `${min}万円 ~ ${max}万円`;
+              }
+            }
+          }
+        }
+      }
+    });
+  </script>
+</body>
+</html>
