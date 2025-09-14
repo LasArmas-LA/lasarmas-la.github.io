@@ -8,8 +8,6 @@ img{ max-width:100%; height:auto; display:block; }
 /* Header / Layout */
 .site-header{ position:sticky; top:0; background:rgba(12,16,24,.8);
   backdrop-filter:saturate(1.2) blur(8px); border-bottom:1px solid #1b2230; z-index:10; }
-.header-inner,.footer-inner,main{ width:min(100% - 32px, var(--max)); margin-inline:auto; }
-.header-inner{ display:flex; align-items:center; gap:16px; padding:10px 0; }
 .brand img{ height:40px; }
 .nav{ margin-left:auto; display:flex; gap:18px; }
 .nav a{ padding:8px 10px; border-radius:10px; }
@@ -88,7 +86,6 @@ img{ max-width:100%; height:auto; display:block; }
 
 /* Footer */
 .site-footer{ margin-top:40px; border-top:1px solid #1b2230; }
-.footer-inner{ padding:20px 0 40px; text-align:center; }
 .footer-banner{ margin:0 auto 12px; max-height:60px; opacity:.9; }
 .footer-links{ display:flex; gap:16px; justify-content:center; margin-bottom:8px; }
 
@@ -96,3 +93,5 @@ img{ max-width:100%; height:auto; display:block; }
 @media (max-width:560px){
   .hero-text{ width: min(94vw, 420px); }
 }
+
+.header-inner,.footer-inner,main{ width:min(100% - 32px, var(--max)); margin-inline:auto; }
