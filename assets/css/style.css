@@ -56,6 +56,21 @@ img{ max-width:100%; height:auto; display:block; }
 /* 動画をクリックしてもリンクが反応するように */
 .hero-video{ pointer-events:none; }
 
+/* Heroの安定化 */
+.hero{ position:relative; }
+.hero img{ width:100%; aspect-ratio:16/9; object-fit:cover; display:block; pointer-events:none; }
+.hero-text{
+  position:absolute; left:2%; bottom:4%;
+  background:rgba(12,16,24,.55); backdrop-filter:blur(8px);
+  padding:16px 20px; border-radius:14px; text-shadow:0 2px 10px #000;
+}
+
+/* もしヒーロー内に誤って2枚以上のimgが入っても見せない保険 */
+.hero img:not(:first-child){ display:none; }
+
+/* ヘッダーロゴは小さく固定 */
+.brand img{ height:40px; }
+
 /* Swiper UI */
 .swiper-pagination-bullet{ opacity:.6; }
 .swiper-pagination-bullet-active{ opacity:1; }

@@ -9,12 +9,12 @@
   <link rel="canonical" href="https://<USER>.github.io/privacy.html" />
 </head>
 <body>
-  <div id="header"></div>
+  <div id="header"></div> <!-- ← main の外に！ -->
 
   <main class="article stack-24">
-    <!-- Hero（サイト規約に合わせた半透明テキスト） -->
     <section class="hero" style="border-radius:18px; overflow:hidden;">
-      <img src="/assets/img/footer-banner.webp" alt="Privacy Policy">
+      <!-- 画像は1枚だけにする -->
+      <img src="/assets/img/footer-banner.webp" alt="Privacy">
       <div class="hero-text">
         <h1>プライバシーポリシー</h1>
         <p class="lead">当サイトにおける個人情報・Cookie・広告・アフィリエイト等の取扱いについて。</p>
@@ -82,10 +82,7 @@
       </ul>
     </article>
   </main>
-
   <div id="footer"></div>
-<!-- すべてのページの末尾に共通で読み込み -->
-<script src="/assets/js/main.js" data-v="20250914"></script>
-
+  <script src="/assets/js/main.js" data-v="20250914"></script>
 </body>
 </html>
