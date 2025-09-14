@@ -1,64 +1,129 @@
 <!doctype html>
-<p>巡るのはいつかの足跡</p>
-<span class="btn">詳しく見る</span>
-</div>
-</a>
-<a class="swiper-slide hero-slide" href="/games/game2.html" aria-label="LeyesFisicas">
-<img src="/assets/img/LeyesFisicas.webp" alt="LeyesFisicasビジュアル" loading="lazy">
-<div class="hero-text">
-<h1>LeyesFisicas</h1>
-<p>宇宙の旅へ出発だ</p>
-<span class="btn">詳しく見る</span>
-</div>
-</a>
-<a class="swiper-slide hero-slide" href="/games/game3.html" aria-label="Macho’s LIFE">
-<img src="/assets/img/MachosLife.webp" alt="Macho’s LIFEビジュアル" loading="lazy">
-<div class="hero-text">
-<h1>Macho’s LIFE</h1>
-<p>筋肉が増強された町からプロテインを取り返す</p>
-<span class="btn">詳しく見る</span>
-</div>
-</a>
-<a class="swiper-slide hero-slide" href="/games/history/" aria-label="LasArmasRogoVideo">
-<video class="hero-video" autoplay muted playsinline preload="metadata" loop>
-<source src="/assets/video/LasArmas_ロゴモーション.webm" type="video/webm" />
-</video>
-<div class="hero-text">
-<h1>私たちの功績</h1>
-<p>私たちの歴史を探索だ</p>
-<span class="btn">詳しく見る</span>
-</div>
-</a>
-</div>
-<div class="swiper-pagination"></div>
-<div class="swiper-button-prev" aria-label="前へ"></div>
-<div class="swiper-button-next" aria-label="次へ"></div>
-</section>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>LasArmas | Home</title>
+  <meta name="description" content="私たちのチームと作品の紹介サイト。">
+  <link rel="icon" href="/assets/img/logo1.webp" />
 
+  <!-- 基本CSS -->
+  <link rel="stylesheet" href="/assets/css/style.css?v=3" />
 
-<section class="cards">
-<article class="card">
-<h2>ゲーム一覧</h2>
-<p>作品のスクショ・説明・リンクを掲載。</p>
-<a class="btn" href="/games/list/">一覧へ</a>
-</article>
-<article class="card">
-<h2>歴史</h2>
-<p>年表・受賞・出展。</p>
-<a class="btn" href="/games/history/">年表を見る</a>
-</article>
-<article class="card">
-<h2>その他</h2>
-<p>メンバー紹介・連絡先。</p>
-<a class="btn" href="/about/">チーム紹介</a>
-</article>
-</section>
-</main>
+  <!-- Swiper（CDN） -->
+  <link rel="stylesheet" href="https://unpkg.com/swiper@10/swiper-bundle.min.css" />
+</head>
+<body >
+  <!-- Header（必要に応じて編集） -->
+<header class="site-header">
+  <div class="header-inner">
+    <a class="brand" href="/"><img src="/assets/img/logo.webp" alt="LasArmas"></a>
+    <nav class="nav">
+      <a href="/games/">Games</a>
+      <a href="/blog/">Blog</a>
+      <a href="/present/">Present</a>
+    </nav>
+  </div>
+</header>
 
+  <main>
+    <!-- ===== Hero Slider（あなたのHTMLを反映済み） ===== -->
+    <section class="hero-slider swiper">
+      <div class="swiper-wrapper">
 
-<div id="footer"></div>
-<script src="https://unpkg.com/swiper@10/swiper-bundle.min.js"></script>
-<script src="/assets/js/slider.js?v=3"></script>
-<script src="/assets/js/main.js"></script>
+        <!-- Slide 1（ゲーム1へ）-->
+        <a class="swiper-slide hero-slide" href="/games/game1.html" aria-label="リリーエイベルの足跡">
+          <img src="/assets/img/riri.webp" alt="リリーエイベルの足跡ビジュアル" loading="eager">
+          <div class="hero-text">
+            <h1>リリーエイベルの足跡</h1>
+            <p>巡るのはいつかの足跡</p>
+            <span class="btn">詳しく見る</span>
+          </div>
+        </a>
+
+        <!-- Slide 2（ゲーム2へ）-->
+        <a class="swiper-slide hero-slide" href="/games/game2.html" aria-label="LeyesFisicas">
+          <img src="/assets/img/LeyesFisicas.webp" alt="LeyesFisicasビジュアル" loading="lazy">
+          <div class="hero-text">
+            <h1>LeyesFisicas</h1>
+            <p>宇宙の旅へ出発だ</p>
+            <span class="btn">詳しく見る</span>
+          </div>
+        </a>
+
+        <!-- Slide 3（ゲーム3へ）-->
+        <a class="swiper-slide hero-slide" href="/games/game3.html" aria-label="Macho’s LIFE">
+          <img src="/assets/img/MachosLife.webp" alt="Macho’s LIFEビジュアル" loading="lazy">
+          <div class="hero-text">
+            <h1>Macho’s LIFE</h1>
+            <p>筋肉が増強された町からプロテインを取り返す</p>
+            <span class="btn">詳しく見る</span>
+          </div>
+        </a>
+
+<!--  Slide 4（歴史ページへ）（動画：自然再生。再生中は自動送りを停止→終了で次へ） -->
+<a class="swiper-slide hero-slide" href="games/history/" aria-label="LasArmasRogoVideo">
+  <video class="hero-video"
+         autoplay
+         muted
+         playsinline
+         preload="metadata"
+         loop>
+    <source src="/assets/video/LasArmas_ロゴモーション.webm" type="video/webm" />
+  </video>
+  <div class="hero-text">
+    <h1>私たちの功績</h1>
+    <p>私たちの歴史を探索だ</p>
+    <span class="btn">詳しく見る</span>
+  </div>
+</a>
+
+      </div>
+
+      <!-- UI -->
+      <div class="swiper-pagination"></div>
+      <div class="swiper-button-prev" aria-label="前へ"></div>
+      <div class="swiper-button-next" aria-label="次へ"></div>
+    </section>
+
+    <!-- 下のカード例（任意） -->
+    <section class="cards">
+      <article class="card">
+        <h2>ゲーム</h2>
+        <p>4作品のスクショ・説明・リンクを掲載。</p>
+        <a class="btn" href="/games/index.html">一覧へ</a>
+      </article>
+      <article class="card">
+        <h2>歴史</h2>
+        <p>年表・受賞・出展。</p>
+        <a class="btn" href="/history/index.html">年表を見る</a>
+      </article>
+      <article class="card">
+        <h2>その他</h2>
+        <p>メンバー紹介・連絡先。</p>
+        <a class="btn" href="/about/">チーム紹介</a>
+      </article>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <img class="footer-banner" src="/assets/img/footer-banner.webp" alt="">
+      <div class="footer-links">
+        <a href="https://x.com/yourteam" target="_blank" rel="noopener">X</a>
+        <a href="mailto:contact@example.com">Contact</a>
+        <a href="/privacy.html">Privacy</a>
+      </div>
+      <small>© <span id="year"></span> Your Team. All rights reserved.</small>
+    </div>
+  </footer>
+
+  <!-- JS -->
+  <script src="https://unpkg.com/swiper@10/swiper-bundle.min.js"></script>
+  <script src="/assets/js/slider.js?v=3"></script>
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
 </body>
 </html>
