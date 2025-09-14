@@ -1,0 +1,11 @@
+[
+  {
+    "title": "サイト公開のお知らせ",
+    "slug": "2025-09-14-hello-world",
+    "date": "2025-09-14",
+    "hero": "/assets/img/riri.webp",
+    "summary": "LasArmas Webを公開しました。構成と今後の予定について。",
+    "tags": ["お知らせ","運用"],
+    "reading_min": 3
+  }
+]
