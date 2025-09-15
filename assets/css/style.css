@@ -157,3 +157,8 @@ img { max-width: 100%; height: auto; display: block; }
   :root { --logo-h: 44px; }
   .hero-text { width: min(94vw,420px); }
 }
+
+.header-inner, .footer-inner, main{
+  width: min(100% - 32px, var(--max));
+  margin-inline: auto;
+}
