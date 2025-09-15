@@ -1,141 +1,128 @@
-:root { --max: 1100px; --bg:#0b0d12; --ink:#e9f0ff; --muted:#a7b0c2; --acc:#7cc4ff; }
-*{ box-sizing:border-box; }
-html,body{ margin:0; padding:0; background:var(--bg); color:var(--ink);
-  font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Hiragino Sans","Noto Sans JP",sans-serif; }
+/* =========================
+   LasArmas 共通スタイル（最新版）
+   ========================= */
+
+/* ---- Theme / Tokens ---- */
+:root{
+  --max: 1100px;            /* 本文の最大幅（必要なら 1280px などに） */
+  --pad: 16px;              /* 左右パディングの基準 */
+  --bg:  #0b0d12;           /* 背景 */
+  --ink: #e9f0ff;           /* 文字色 */
+  --muted:#a7b0c2;          /* 補助テキスト */
+  --acc: #7cc4ff;           /* アクセント（リンク） */
+
+  --header-pad-y: 16px;     /* ヘッダー上下の余白（少しだけ大きめ） */
+  --logo-h: 50px;           /* ヘッダーロゴの高さ（従来40px→50px） */
+}
+
+/* ---- Reset / Base ---- */
+*{ box-sizing: border-box; }
+html,body{
+  margin:0; padding:0;
+  background:var(--bg); color:var(--ink);
+  font-family: system-ui,-apple-system,"Segoe UI",Roboto,"Hiragino Sans","Noto Sans JP",sans-serif;
+}
 a{ color:var(--acc); text-decoration:none; }
 img{ max-width:100%; height:auto; display:block; }
 
-/* Header / Layout */
-.site-header{ position:sticky; top:0; background:rgba(12,16,24,.8);
-  backdrop-filter:saturate(1.2) blur(8px); border-bottom:1px solid #1b2230; z-index:10; }
-.brand img{ height:40px; }
-.nav{ margin-left:auto; display:flex; gap:18px; }
-.nav a{ padding:8px 10px; border-radius:10px; }
-.nav a:hover{ background:#162031; }
-
-/* ===== Hero Slider ===== */
-.hero-slider{ margin-top:16px; border-radius:18px; overflow:hidden; }
-.hero-slide{ position:relative; display:block; color:inherit; }
-
-/* 画像/動画は 16:9 で統一し、全面カバー */
-.hero-slide img,
-.hero-slide video{
-  width:100%;
-  aspect-ratio:16/9;
-  object-fit:cover;
-  display:block;
+/* ---- Container（中身の幅を統一） ---- */
+.container{
+  width: min(100% - (var(--pad) * 2), var(--max));
+  margin-inline:auto;
+  padding-inline: var(--pad);
 }
 
-/* 文字パネル（画像/動画の上に重ねる） */
+/* =========================
+   Header
+   ========================= */
+.site-header{
+  position: sticky; top: 0; z-index: 50;
+  background: rgba(12,16,24,.8);
+  backdrop-filter: saturate(1.1) blur(8px);
+  border-bottom: 1px solid #1b2230;
+}
+.header-row{
+  display:flex; align-items:center; justify-content:space-between; gap:16px;
+  padding-block: var(--header-pad-y);
+}
+.brand img{ height: var(--logo-h); width:auto; }
+
+.nav{ display:flex; gap:22px; white-space:nowrap; }
+.nav a{ padding:10px 12px; border-radius:10px; }
+.nav a:hover{ background:#162031; }
+.nav a.active, .nav a[aria-current="page"]{
+  text-decoration: underline; text-underline-offset:4px;
+}
+
+/* =========================
+   Hero
+   ========================= */
+.hero{ position:relative; border-radius:18px; overflow:hidden; }
+.hero img, .hero video{
+  width:100%; aspect-ratio:16/9; object-fit:cover; display:block;
+  pointer-events:none; /* 画像/動画がリンクを覆う事故防止 */
+}
+
+/* 画像/動画の上に重ねるテキストボックス */
 .hero-text{
   position:absolute;
   left: clamp(16px, 5vw, 40px);
   bottom: clamp(16px, 5vw, 40px);
-  z-index:2;
-  color:#fff;
-
+  z-index:2; color:#fff;
   background: rgba(0,0,0,.45);
   backdrop-filter: blur(4px);
-  padding:16px 20px;
-  border-radius:12px;
-
-  /* 横幅は統一、高さはJSで最長に合わせて統一 */
+  padding:16px 20px; border-radius:12px;
   width: min(92vw, 520px);
   display:flex; flex-direction:column; justify-content:center;
 }
-
-/* テキスト視認性UP */
 .hero-text h1, .hero-text p{
   margin:0 0 8px;
   text-shadow: 0 3px 12px rgba(0,0,0,.85), 0 1px 2px rgba(0,0,0,.6);
 }
-.hero h1{ font-size:clamp(24px,4vw,40px); line-height:1.2; }
+.hero h1{ font-size: clamp(24px,4vw,40px); line-height:1.2; }
 
-/* 動画をクリックしてもリンクが反応するように */
-.hero-video{ pointer-events:none; }
-
-/* Heroの安定化 */
-.hero{ position:relative; }
-.hero img{ width:100%; aspect-ratio:16/9; object-fit:cover; display:block; pointer-events:none; }
-.hero-text{
-  position:absolute; left:2%; bottom:4%;
-  background:rgba(12,16,24,.55); backdrop-filter:blur(8px);
-  padding:16px 20px; border-radius:14px; text-shadow:0 2px 10px #000;
-}
-
-/* もしヒーロー内に誤って2枚以上のimgが入っても見せない保険 */
-.hero img:not(:first-child){ display:none; }
-
-/* ヘッダーロゴは小さく固定 */
-.brand img{ height:40px; }
-
-/* Swiper UI */
+/* Swiper（必要な最小だけ） */
+.hero-slider{ margin-top:16px; }
 .swiper-pagination-bullet{ opacity:.6; }
 .swiper-pagination-bullet-active{ opacity:1; }
 .swiper-button-prev, .swiper-button-next{
   color:#fff; text-shadow:0 0 8px rgba(0,0,0,.6);
 }
 
-/* ボタン・カードなど（任意） */
-.btn{ display:inline-block; margin-top:8px; padding:10px 16px; border-radius:12px; background:#1b90ff; color:#fff; font-weight:600; }
-.btn:hover{ filter:brightness(1.1); }
-
-.cards{ display:grid; grid-template-columns:repeat(auto-fit, minmax(240px,1fr)); gap:16px; margin:28px 0 40px; }
-.card{ padding:18px; border:1px solid #1b2230; border-radius:16px; background:#0d121b; }
+/* =========================
+   Cards / Buttons
+   ========================= */
+.cards{
+  display:grid; grid-template-columns:repeat(auto-fit, minmax(240px,1fr));
+  gap:16px; margin:28px 0 40px;
+}
+.card{
+  padding:18px; border:1px solid #1b2230; border-radius:16px; background:#0d121b;
+}
 .card h2{ margin:0 0 8px; }
 
-/* Footer */
-.site-footer{ margin-top:40px; border-top:1px solid #1b2230; }
-.footer-banner{ margin:0 auto 12px; max-height:60px; opacity:.9; }
-.footer-links{ display:flex; gap:16px; justify-content:center; margin-bottom:8px; }
-
-.header-inner,.footer-inner,main{ width:min(100% - 32px, var(--max)); margin-inline:auto; }
-
-/* ===== 共通レイアウト（ヘッダー/フッターと本文の幅を確実に揃える） ===== */
-:root{
-  --max: 1100px;              /* 本文の最大幅（必要なら1280pxなどに） */
-  --pad: 16px;
+.btn{
+  display:inline-block; margin-top:8px; padding:10px 16px;
+  border-radius:12px; background:#1b90ff; color:#fff; font-weight:600;
 }
+.btn:hover{ filter:brightness(1.1); }
 
-/* 全ページで使う内包器。本文もヘッダー/フッターもこれで幅を統一 */
-.container{
-  width: min(100% - (var(--pad) * 2), var(--max));
-  margin-inline: auto;
-  padding-inline: var(--pad);
-}
-
-/* 以前の .header-inner / .footer-inner は不使用にする（念のため無効化） */
-.header-inner, .footer-inner { all: unset; }
-
-/* ===== ヘッダー ===== */
-.site-header{
-  position: sticky; top: 0; z-index: 50;
-  background: rgba(10,12,16,.7);
-  backdrop-filter: blur(8px);
-  border-bottom: 1px solid rgba(255,255,255,.06);
-}
-.header-row{
-  display: flex; align-items: center; justify-content: space-between; gap: 16px;
-}
-.brand img{ height: 36px; width: auto; display:block; }
-.nav{ display:flex; gap: 22px; white-space: nowrap; }
-.nav a{ text-decoration: none; }
-.nav a.active, .nav a[aria-current="page"]{ text-decoration: underline; text-underline-offset: 4px; }
-
-/* ===== フッター ===== */
+/* =========================
+   Footer（最小）
+   ========================= */
 .site-footer{
+  margin-top:40px; border-top:1px solid #1b2230;
   background: rgba(10,12,16,.7);
-  border-top: 1px solid rgba(255,255,255,.06);
 }
 .footer-row{
-  display:flex; align-items:center; justify-content:space-between; gap:16px; padding-block: 18px;
+  display:flex; align-items:center; justify-content:space-between; gap:16px;
+  padding-block: 18px;
 }
-.small a{ font-size: .95rem; }
 
-/* ===== Heroがリンクを覆う事故防止 ===== */
-.hero img, .hero video{ pointer-events:none; }
-
-/* 小画面 */
+/* =========================
+   Responsive
+   ========================= */
 @media (max-width:560px){
+  :root{ --logo-h: 44px; }         /* モバイルでは少しだけ縮める */
   .hero-text{ width: min(94vw, 420px); }
 }
