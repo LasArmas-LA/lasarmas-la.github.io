@@ -30,6 +30,43 @@ async function inject(targetId, partialPath) {
   });
 }
 
+(function themeBoot(){
+  const root = document.documentElement;
+  const saved = localStorage.getItem("theme");          // "light" | "dark" | null
+  const prefersLight = window.matchMedia("(prefers-color-scheme: light)").matches;
+
+  // 初期テーマ
+  if (saved === "light")      root.setAttribute("data-theme", "light");
+  else if (saved === "dark")  root.setAttribute("data-theme", "dark");
+  else                        root.removeAttribute("data-theme"); // OSに従う
+
+  // トグル
+  function apply(theme){      // "light" or "dark"
+    if (theme === "light"){ root.setAttribute("data-theme","light"); localStorage.setItem("theme","light"); }
+    else{ root.setAttribute("data-theme","dark"); localStorage.setItem("theme","dark"); }
+    // a11y状態
+    const btn = document.getElementById("theme-toggle");
+    if (btn){ btn.setAttribute("aria-pressed", theme === "dark" ? "true" : "false"); btn.textContent = theme === "dark" ? "🌙" : "☀️"; }
+    // Chart.js などの再配色用カスタムイベント（必要なページだけ拾えばOK）
+    window.dispatchEvent(new CustomEvent("themechange", { detail:{ theme } }));
+  }
+
+  // ヘッダー注入後にボタンへイベント付与
+  document.addEventListener("DOMContentLoaded", () => {
+    const btn = document.getElementById("theme-toggle");
+    if (!btn) return;
+    // 初期表示のアイコン
+    const now = root.getAttribute("data-theme") || (prefersLight ? "light":"dark");
+    btn.setAttribute("aria-pressed", now === "dark" ? "true" : "false");
+    btn.textContent = now === "dark" ? "🌙" : "☀️";
+
+    btn.addEventListener("click", () => {
+      const current = root.getAttribute("data-theme") || (prefersLight ? "light":"dark");
+      apply(current === "light" ? "dark" : "light");
+    });
+  });
+})();
+
 // 注入（どの階層から読んでもOK）
 inject("header", "/partials/header.html");
 inject("footer", "/partials/footer.html");
