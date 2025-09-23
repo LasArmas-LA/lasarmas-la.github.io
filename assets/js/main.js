@@ -1,160 +1,131 @@
-async function inject(targetId, partialPath) {
-  const mount = document.getElementById(targetId);
-  if (!mount) return;
-
-  const v = document.currentScript?.dataset?.v || "v0";
-  const url = new URL(partialPath, location.origin);
-
-  const res = await fetch(url.pathname + `?${v}`, { cache: "no-store" });
-  if (!res.ok) return;
-
-  mount.innerHTML = await res.text();
-
-  // 動的year
-  const y = mount.querySelector("#year");
-  if (y) y.textContent = new Date().getFullYear();
-
-  // 現在ページに active を付与（/index.html と末尾 / を同一視）
-  const here = location.pathname
-    .replace(/\/index\.html$/, "")
-    .replace(/\/$/, "");
-
-  mount.querySelectorAll('nav a[href]').forEach(a => {
-    const p = new URL(a.getAttribute("href"), location.origin).pathname
-      .replace(/\/index\.html$/, "")
-      .replace(/\/$/, "");
-    if (p === here) {
-      a.classList.add("active");
-      a.setAttribute("aria-current", "page");
-    }
-  });
-}
-
-(function themeBoot(){
-  const root = document.documentElement;
-  const saved = localStorage.getItem("theme");          // "light" | "dark" | null
-  const prefersLight = window.matchMedia("(prefers-color-scheme: light)").matches;
-
-  // 初期テーマ
-  if (saved === "light")      root.setAttribute("data-theme", "light");
-  else if (saved === "dark")  root.setAttribute("data-theme", "dark");
-  else                        root.removeAttribute("data-theme"); // OSに従う
-
-  // トグル
-  function apply(theme){      // "light" or "dark"
-    if (theme === "light"){ root.setAttribute("data-theme","light"); localStorage.setItem("theme","light"); }
-    else{ root.setAttribute("data-theme","dark"); localStorage.setItem("theme","dark"); }
-    // a11y状態
-    const btn = document.getElementById("theme-toggle");
-    if (btn){ btn.setAttribute("aria-pressed", theme === "dark" ? "true" : "false"); btn.textContent = theme === "dark" ? "🌙" : "☀️"; }
-    // Chart.js などの再配色用カスタムイベント（必要なページだけ拾えばOK）
-    window.dispatchEvent(new CustomEvent("themechange", { detail:{ theme } }));
-  }
-
-  // ヘッダー注入後にボタンへイベント付与
-  document.addEventListener("DOMContentLoaded", () => {
-    const btn = document.getElementById("theme-toggle");
-    if (!btn) return;
-    // 初期表示のアイコン
-    const now = root.getAttribute("data-theme") || (prefersLight ? "light":"dark");
-    btn.setAttribute("aria-pressed", now === "dark" ? "true" : "false");
-    btn.textContent = now === "dark" ? "🌙" : "☀️";
-
-    btn.addEventListener("click", () => {
-      const current = root.getAttribute("data-theme") || (prefersLight ? "light":"dark");
-      apply(current === "light" ? "dark" : "light");
-    });
-  });
+﻿const root = document.documentElement;
+const versionToken = (() => {
+  const script = document.currentScript;
+  if (!script) return "v0";
+  if (script.dataset?.v) return script.dataset.v;
+  const src = script.getAttribute("src");
+  if (src && src.includes("?")) return src.split("?")[1];
+  return "v0";
 })();
 
-// 注入（どの階層から読んでもOK）
+applyTheme(getStartTheme());
 inject("header", "/partials/header.html");
 inject("footer", "/partials/footer.html");
 
-// クリック不能対策（Hero画像が覆う事故の保険）
 document.addEventListener("DOMContentLoaded", () => {
   document.querySelectorAll(".hero img, .hero video").forEach(el => {
     el.style.pointerEvents = "none";
   });
 });
 
+async function inject(targetId, partialPath) {
+  const mount = document.getElementById(targetId);
+  if (!mount) return;
 
-
-
-
-/* ================================
-   共通パーツ注入
-================================ */
-async function inject(targetId, path) {
-  const el = document.getElementById(targetId);
-  if (!el) return;
-  const res = await fetch(path, { cache: "no-store" });
+  const url = new URL(partialPath, location.origin);
+  const cacheKey = versionToken ? `${url.pathname}?${versionToken}` : url.pathname;
+  const res = await fetch(cacheKey, { cache: "no-store" });
   if (!res.ok) return;
-  el.innerHTML = await res.text();
 
-  // 年号
-  const y = el.querySelector("#year");
-  if (y) y.textContent = new Date().getFullYear();
-
-  // ナビ active
-  const here = location.pathname.replace(/\/index\.html$/, "").replace(/\/$/, "");
-  el.querySelectorAll('nav a[href]').forEach(a => {
-    const p = new URL(a.getAttribute("href"), location.origin).pathname
-      .replace(/\/index\.html$/, "").replace(/\/$/, "");
-    if (p === here) {
-      a.classList.add("active");
-      a.setAttribute("aria-current", "page");
-    }
-  });
-
-  // ヘッダー注入完了後にテーマボタンを初期化
-  if (targetId === "header") initThemeToggle();
+  mount.innerHTML = await res.text();
+  hydratePartial(mount, targetId);
 }
 
-// 呼び出し
-inject("header", "/partials/header.html");
-inject("footer", "/partials/footer.html");
+function hydratePartial(rootEl, targetId) {
+  const year = rootEl.querySelector("#year");
+  if (year) year.textContent = new Date().getFullYear();
 
-/* ================================
-   テーマ切替（ライト／ダーク）
-   - ヘッダー注入後でも確実に初期化
-================================ */
-const root = document.documentElement;
+  markActiveNav(rootEl);
+
+  if (targetId === "header") initHeaderInteractions();
+}
+
+function markActiveNav(scope) {
+  const here = location.pathname.replace(/\/index\.html$/, "").replace(/\/$/, "");
+  scope.querySelectorAll('nav a[href]').forEach(link => {
+    const path = new URL(link.getAttribute("href"), location.origin).pathname
+      .replace(/\/index\.html$/, "")
+      .replace(/\/$/, "");
+    if (path === here) {
+      link.classList.add("active");
+      link.setAttribute("aria-current", "page");
+    }
+  });
+}
+
+let headerInitDone = false;
+function initHeaderInteractions() {
+  if (headerInitDone) return;
+  headerInitDone = true;
+  initThemeToggle();
+  initNavToggle();
+}
 
 function getStartTheme() {
   const saved = localStorage.getItem("theme");
   if (saved === "light" || saved === "dark") return saved;
-  return matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+  return window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
 }
 
 function applyTheme(theme) {
-  root.setAttribute("data-theme", theme);                 // CSS切替
-  localStorage.setItem("theme", theme);                   // 保存
-  const btn = document.getElementById("theme-toggle");    // UI更新
-  if (btn) {
-    btn.setAttribute("aria-pressed", theme === "dark" ? "true" : "false");
-    btn.textContent = theme === "dark" ? "🌙" : "☀️";
+  root.setAttribute("data-theme", theme);
+  localStorage.setItem("theme", theme);
+  const button = document.getElementById("theme-toggle");
+  if (button) {
+    button.setAttribute("aria-pressed", theme === "dark" ? "true" : "false");
+    button.textContent = theme === "dark" ? "🌙" : "☀️";
   }
-  // グラフ等に通知したい場合のイベント
   window.dispatchEvent(new CustomEvent("themechange", { detail: { theme } }));
 }
 
-// ページ読込時にまずテーマを適用（ヘッダーより先にやってOK）
-applyTheme(getStartTheme());
-
 function initThemeToggle() {
-  const btn = document.getElementById("theme-toggle");
-  if (!btn) return; // ヘッダーまだ無い場合は何もしない
-  // 初期表示
-  const now = root.getAttribute("data-theme") || getStartTheme();
-  btn.setAttribute("aria-pressed", now === "dark" ? "true" : "false");
-  btn.textContent = now === "dark" ? "🌙" : "☀️";
-  // クリックで切替
-  btn.onclick = () => {
-    const next = (root.getAttribute("data-theme") === "light") ? "dark" : "light";
+  const button = document.getElementById("theme-toggle");
+  if (!button) return;
+  const current = root.getAttribute("data-theme") || getStartTheme();
+  button.setAttribute("aria-pressed", current === "dark" ? "true" : "false");
+  button.textContent = current === "dark" ? "🌙" : "☀️";
+  button.addEventListener("click", () => {
+    const next = root.getAttribute("data-theme") === "light" ? "dark" : "light";
     applyTheme(next);
-  };
+  });
 }
 
-/* フォールバック：万一注入前にDOMContentLoadedが先に走っても、
-   ヘッダー挿入後に initThemeToggle() が呼ばれるのでOK */
+function initNavToggle() {
+  const toggle = document.querySelector(".nav-toggle");
+  const nav = document.getElementById("site-nav");
+  if (!toggle || !nav) return;
+
+  const mq = window.matchMedia("(min-width: 769px)");
+
+  const setState = expanded => {
+    toggle.setAttribute("aria-expanded", expanded ? "true" : "false");
+    nav.dataset.collapsed = expanded ? "false" : "true";
+  };
+
+  setState(mq.matches);
+
+  const handleMediaChange = event => setState(event.matches);
+  if (mq.addEventListener) {
+    mq.addEventListener("change", handleMediaChange);
+  } else if (mq.addListener) {
+    mq.addListener(handleMediaChange);
+  }
+
+  toggle.addEventListener("click", () => {
+    const expanded = toggle.getAttribute("aria-expanded") === "true";
+    setState(!expanded);
+  });
+
+  nav.querySelectorAll("a[href]").forEach(link => {
+    link.addEventListener("click", () => {
+      if (!mq.matches) setState(false);
+    });
+  });
+
+  document.addEventListener("click", event => {
+    if (mq.matches) return;
+    if (!nav.contains(event.target) && !toggle.contains(event.target)) {
+      setState(false);
+    }
+  });
+}
