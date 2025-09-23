@@ -1,21 +1,41 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="ja">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Blog | LasArmas</title>
+  <meta name="description" content="LasArmasの活動記録やコラムをまとめています。" />
+  <link rel="canonical" href="https://lasarmas-la.github.io/blog/blog_index.html" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Blog | LasArmas" />
+  <meta property="og:description" content="LasArmasの活動記録やコラムをまとめています。" />
+  <meta property="og:url" content="https://lasarmas-la.github.io/blog/blog_index.html" />
+  <meta property="og:image" content="https://lasarmas-la.github.io/assets/img/og.webp" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Blog | LasArmas" />
+  <meta name="twitter:description" content="LasArmasの活動記録やコラムをまとめています。" />
+  <meta name="twitter:image" content="https://lasarmas-la.github.io/assets/img/og.webp" />
+  <link rel="manifest" href="/manifest.webmanifest" />
   <link rel="stylesheet" href="/assets/css/style.css" />
-  <meta name="description" content="LasArmasのブログ。制作ログや運用メモを更新します。">
 </head>
 <body>
+  <a class="skip" href="#main">本文へスキップ</a>
   <div id="header"></div>
 
-  <main class="article stack-24">
+  <main id="main" class="article stack-24">
     <section class="hero" style="border-radius:18px; overflow:hidden;">
-      <img src="/assets/img/footer-banner.webp" alt="Blog">
+      <img
+        src="/assets/img/footer-banner.webp"
+        alt="LasArmas Blogのカバー画像"
+        loading="eager"
+        width="1600"
+        height="900"
+        srcset="/assets/img/footer-banner-640.webp 640w, /assets/img/footer-banner-960.webp 960w, /assets/img/footer-banner.webp 1600w"
+        sizes="(max-width: 767px) 92vw, (max-width: 1100px) 90vw, 1100px"
+      >
       <div class="hero-text">
         <h1>Blog</h1>
-        <p class="lead">制作ログ・運用メモ・購入記などを更新。</p>
+        <p class="lead">活動記録や開発メモを発信します。</p>
       </div>
     </section>
 
@@ -25,25 +45,23 @@
   </main>
 
   <div id="footer"></div>
-  <!-- すべてのページの末尾に共通で読み込み -->
-<script src="/assets/js/main.js" data-v="20250914"></script>
+  <script src="/assets/js/main.js" data-v="20250914"></script>
 
   <script>
-    // /blog/posts.json を読み込んでカードを描画
     fetch('/blog/posts.json')
       .then(r => r.json())
       .then(posts => {
         const list = document.getElementById('post-list');
-        posts.sort((a,b) => b.date.localeCompare(a.date));
+        posts.sort((a, b) => b.date.localeCompare(a.date));
         list.innerHTML = posts.map(p => `
           <a class="card" href="/blog/${p.slug}.html" style="text-decoration:none;">
-            <img src="${p.hero}" alt="" loading="lazy">
+            <img src="${p.hero}" alt="${p.title}" loading="lazy" width="1600" height="900">
             <div class="p-16">
               <h3>${p.title}</h3>
-              <p class="muted">${new Date(p.date).toLocaleDateString('ja-JP')} · ${p.reading_min? `${p.reading_min}分` : ''}</p>
+              <p class="muted">${new Date(p.date).toLocaleDateString('ja-JP')} ${p.reading_min ? `｜ ${p.reading_min}分` : ''}</p>
               <p class="mt-8">${p.summary ?? ''}</p>
               <div class="tags mt-12">
-                ${(p.tags||[]).map(t=>`<span class="tag">${t}</span>`).join('')}
+                ${(p.tags || []).map(t => `<span class="tag">${t}</span>`).join('')}
               </div>
             </div>
           </a>
@@ -51,7 +69,7 @@
       })
       .catch(e => {
         document.getElementById('post-list').innerHTML =
-          '<p class="muted">記事リストの読み込みに失敗しました。</p>';
+          '<p class="muted">記事一覧を読み込めませんでした。</p>';
         console.error(e);
       });
   </script>

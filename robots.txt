@@ -1,0 +1,3 @@
+﻿User-agent: *
+Allow: /
+Sitemap: https://lasarmas-la.github.io/sitemap.xml

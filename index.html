@@ -1,46 +1,74 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="ja">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>LasArmas Hub</title>
+  <meta name="description" content="私たちの活動を3つのカテゴリで公開しています。" />
+  <link rel="canonical" href="https://lasarmas-la.github.io/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="LasArmas Hub" />
+  <meta property="og:description" content="私たちの活動を3つのカテゴリで公開しています。" />
+  <meta property="og:url" content="https://lasarmas-la.github.io/" />
+  <meta property="og:image" content="https://lasarmas-la.github.io/assets/img/og.webp" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="LasArmas Hub" />
+  <meta name="twitter:description" content="私たちの活動を3つのカテゴリで公開しています。" />
+  <meta name="twitter:image" content="https://lasarmas-la.github.io/assets/img/og.webp" />
+  <link rel="manifest" href="/manifest.webmanifest" />
+  <link rel="preload" as="image" href="/assets/img/logo1.webp" />
   <link rel="stylesheet" href="/assets/css/style.css" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "LasArmas",
+    "url": "https://lasarmas-la.github.io/",
+    "logo": "https://lasarmas-la.github.io/assets/img/logo1.webp"
+  }
+  </script>
 </head>
 <body>
+  <a class="skip" href="#main">本文へスキップ</a>
   <div id="header"></div>
-</header>
 
-<main class="article stack-24">
-  <section class="hero">
-    <img src="/assets/img/logo1.webp" alt="">
-    <div class="hero-text">
-      <h1>LasArmas Hub</h1>
-      <p>私たちの活動を3つのカテゴリで公開しています。</p>
-    </div>
-  </section>
+  <main id="main" class="article stack-24">
+    <section class="hero">
+      <img
+        src="/assets/img/logo1.webp"
+        alt="LasArmasの象徴的なロゴ"
+        loading="eager"
+        width="1600"
+        height="900"
+        srcset="/assets/img/logo1-640.webp 640w, /assets/img/logo1-960.webp 960w, /assets/img/logo1.webp 1600w"
+        sizes="(max-width: 767px) 92vw, (max-width: 1100px) 90vw, 1100px"
+      >
+      <div class="hero-text">
+        <h1>LasArmas Hub</h1>
+        <p>私たちの活動を3つのカテゴリで公開しています。</p>
+      </div>
+    </section>
 
-  <section class="cards">
-    <article class="card">
-      <h2>Games</h2>
-      <p>開発中・公開中のゲーム紹介</p>
-      <a href="/games/game_index.html" class="btn">ゲームへ</a>
-    </article>
-    <article class="card">
-      <h2>Blog</h2>
-      <p>企画や開発記を公開</p>
-      <a href="/blog/blog_index.html" class="btn">ブログへ</a>
-    </article>
-    <article class="card">
-      <h2>Present</h2>
-      <p>まとめ資料・スライド</p>
-      <a href="/present/present_index.html" class="btn">プレゼンへ</a>
-    </article>
-  </section>
-</main>
+    <section class="cards">
+      <article class="card">
+        <h2>Games</h2>
+        <p>開発中・公開中のゲーム紹介。</p>
+        <a href="/games/game_index.html" class="btn">ゲームへ</a>
+      </article>
+      <article class="card">
+        <h2>Blog</h2>
+        <p>企画メモや開発記を公開。</p>
+        <a href="/blog/blog_index.html" class="btn">ブログへ</a>
+      </article>
+      <article class="card">
+        <h2>Present</h2>
+        <p>まとめ資料やスライド。</p>
+        <a href="/present/present_index.html" class="btn">プレゼンへ</a>
+      </article>
+    </section>
+  </main>
 
-<div id="footer"></div>
-<!-- すべてのページの末尾に共通で読み込み -->
-<script src="/assets/js/main.js" data-v="20250914"></script>
-
+  <div id="footer"></div>
+  <script src="/assets/js/main.js" data-v="20250914"></script>
 </body>
 </html>

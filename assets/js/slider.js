@@ -1,11 +1,9 @@
-/* ===== Swiper 初期化（全スライド5秒） ===== */
+﻿/* ===== Swiper 蛻晄悄蛹厄ｼ亥・繧ｹ繝ｩ繧､繝・遘抵ｼ・===== */
 const heroSwiper = new Swiper('.hero-slider', {
   loop: true,
   speed: 700,
   autoplay: {
-    delay: 5000,                 // 全スライド5秒
-    disableOnInteraction: false, // 手動後も自動再開
-    pauseOnMouseEnter: true
+    delay: 5000,                 // 蜈ｨ繧ｹ繝ｩ繧､繝・遘・    disableOnInteraction: false, // 謇句虚蠕後ｂ閾ｪ蜍募・髢・    pauseOnMouseEnter: true
   },
   pagination: { el: '.hero-slider .swiper-pagination', clickable: true },
   navigation: {
@@ -20,14 +18,32 @@ const heroSwiper = new Swiper('.hero-slider', {
   }
 });
 
-/* ===== 動画スライド：到達ごとに0秒から再生＆5秒で次へ ===== */
+const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+if (prefersReducedMotion.matches && heroSwiper.autoplay) {
+  heroSwiper.autoplay.stop();
+}
+const handleMotionPreference = event => {
+  if (!heroSwiper.autoplay) return;
+  if (event.matches) {
+    heroSwiper.autoplay.stop();
+  } else {
+    heroSwiper.autoplay.start();
+  }
+};
+if (prefersReducedMotion.addEventListener) {
+  prefersReducedMotion.addEventListener('change', handleMotionPreference);
+} else if (prefersReducedMotion.addListener) {
+  prefersReducedMotion.addListener(handleMotionPreference);
+}
+
+/* ===== 蜍慕判繧ｹ繝ｩ繧､繝会ｼ壼芦驕斐＃縺ｨ縺ｫ0遘偵°繧牙・逕滂ｼ・遘偵〒谺｡縺ｸ ===== */
 let videoAdvanceTimer = null;
 
 function handleSlideMedia(swiper){
-  // 既存タイマー解除
+  // 譌｢蟄倥ち繧､繝槭・隗｣髯､
   if (videoAdvanceTimer){ clearTimeout(videoAdvanceTimer); videoAdvanceTimer = null; }
 
-  // すべての動画を停止＆リセット
+  // 縺吶∋縺ｦ縺ｮ蜍慕判繧貞●豁｢・・Μ繧ｻ繝・ヨ
   document.querySelectorAll('.hero-slide video').forEach(v => {
     try { v.pause(); v.currentTime = 0; } catch(e){}
   });
@@ -37,13 +53,11 @@ function handleSlideMedia(swiper){
 
   const video = active.querySelector('video');
   if (!video){
-    // 画像スライド：autoplay任せ
-    if (!swiper.autoplay.running) swiper.autoplay.start();
+    // 逕ｻ蜒上せ繝ｩ繧､繝会ｼ啾utoplay莉ｻ縺・    if (!swiper.autoplay.running) swiper.autoplay.start();
     return;
   }
 
-  // 動画スライド：5秒で次へ（全体のテンポ統一）
-  if (swiper.autoplay.running) swiper.autoplay.stop();
+  // 蜍慕判繧ｹ繝ｩ繧､繝会ｼ・遘偵〒谺｡縺ｸ・亥・菴薙・繝・Φ繝晉ｵｱ荳・・  if (swiper.autoplay.running) swiper.autoplay.stop();
 
   video.loop = true;
   video.muted = true;
@@ -51,18 +65,17 @@ function handleSlideMedia(swiper){
   video.setAttribute('muted','');
   video.setAttribute('playsinline','');
 
-  // 0秒から再生
-  try { video.currentTime = 0; } catch(e){}
-  video.play().catch(()=>{ /* 自動再生失敗は無視（muted/playsinline推奨） */ });
+  // 0遘偵°繧牙・逕・  try { video.currentTime = 0; } catch(e){}
+  video.play().catch(()=>{ /* 閾ｪ蜍募・逕溷､ｱ謨励・辟｡隕厄ｼ・uted/playsinline謗ｨ螂ｨ・・*/ });
 
-  // 5秒後に次へ & autoplay再開
+  // 5遘貞ｾ後↓谺｡縺ｸ & autoplay蜀埼幕
   videoAdvanceTimer = setTimeout(() => {
     swiper.slideNext();
     swiper.autoplay.start();
   }, 5000);
 }
 
-/* ===== .hero-text の高さを最長に統一 ===== */
+/* ===== .hero-text 縺ｮ鬮倥＆繧呈怙髟ｷ縺ｫ邨ｱ荳 ===== */
 let eqTimer = null;
 
 function equalizeHeroTextHeights(){
@@ -71,30 +84,26 @@ function equalizeHeroTextHeights(){
     const boxes = Array.from(document.querySelectorAll('.hero-text'));
     if (!boxes.length) return;
 
-    // いったん自然高さに戻す
-    boxes.forEach(b => b.style.height = 'auto');
+    // 縺・▲縺溘ｓ閾ｪ辟ｶ鬮倥＆縺ｫ謌ｻ縺・    boxes.forEach(b => b.style.height = 'auto');
 
-    // 最大高さを測る
-    const max = boxes.reduce((m, b) => Math.max(m, b.offsetHeight), 0);
+    // 譛螟ｧ鬮倥＆繧呈ｸｬ繧・    const max = boxes.reduce((m, b) => Math.max(m, b.offsetHeight), 0);
 
-    // すべてに適用
+    // 縺吶∋縺ｦ縺ｫ驕ｩ逕ｨ
     boxes.forEach(b => b.style.height = max + 'px');
   });
 }
 
-/* 画像や動画の読み込みタイミングでも再計測 */
+/* 逕ｻ蜒上ｄ蜍慕判縺ｮ隱ｭ縺ｿ霎ｼ縺ｿ繧ｿ繧､繝溘Φ繧ｰ縺ｧ繧ょ・險域ｸｬ */
 window.addEventListener('load', equalizeHeroTextHeights);
 window.addEventListener('resize', () => {
   if (eqTimer) cancelAnimationFrame(eqTimer);
   eqTimer = requestAnimationFrame(equalizeHeroTextHeights);
 });
 
-/* スライダー内の画像・動画にロードイベントを張って、読み込み後に再計測 */
+/* 繧ｹ繝ｩ繧､繝繝ｼ蜀・・逕ｻ蜒上・蜍慕判縺ｫ繝ｭ繝ｼ繝峨う繝吶Φ繝医ｒ蠑ｵ縺｣縺ｦ縲∬ｪｭ縺ｿ霎ｼ縺ｿ蠕後↓蜀崎ｨ域ｸｬ */
 document.querySelectorAll('.hero-slide img').forEach(img => {
-  if (img.complete) return; // 既に読み込まれていれば無視
-  img.addEventListener('load', equalizeHeroTextHeights, { once:true });
+  if (img.complete) return; // 譌｢縺ｫ隱ｭ縺ｿ霎ｼ縺ｾ繧後※縺・ｌ縺ｰ辟｡隕・  img.addEventListener('load', equalizeHeroTextHeights, { once:true });
 });
 document.querySelectorAll('.hero-slide video').forEach(v => {
-  // メタ情報が入ったら高さ計測（ポスター表示分も含めて）
-  v.addEventListener('loadedmetadata', equalizeHeroTextHeights, { once:true });
+  // 繝｡繧ｿ諠・ｱ縺悟・縺｣縺溘ｉ鬮倥＆險域ｸｬ・医・繧ｹ繧ｿ繝ｼ陦ｨ遉ｺ蛻・ｂ蜷ｫ繧√※・・  v.addEventListener('loadedmetadata', equalizeHeroTextHeights, { once:true });
 });

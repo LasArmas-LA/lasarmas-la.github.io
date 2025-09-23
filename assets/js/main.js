@@ -129,3 +129,9 @@ function initNavToggle() {
     }
   });
 }
+if ('serviceWorker' in navigator && !window.__lasarmasSWRegistered) {
+  window.__lasarmasSWRegistered = true;
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch(() => {});
+  });
+}
