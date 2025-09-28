@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>LasArmas ゲームサイト - 遊べ、創れ、超えていけ。</title>
+  <meta name="description" content="次の世界は、ここから始まる。LasArmasが開発する最新ゲームのトレーラー、開発ブログ、ダウンロード情報などをお届けします。" />
+  <link rel="canonical" href="https://lasarmas.net/games/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="LasArmas ゲームサイト" />
+  <meta property="og:description" content="遊べ、創れ、超えていけ。次の世界は、ここから始まる。" />
+  <meta property="og:url" content="https://lasarmas.net/games/" />
+  <meta property="og:image" content="https://lasarmas.net/og/games.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="LasArmas ゲームサイト" />
+  <meta name="twitter:description" content="遊べ、創れ、超えていけ。次の世界は、ここから始まる。" />
+  <meta name="twitter:image" content="https://lasarmas.net/og/games.png" />
+  <link rel="manifest" href="/manifest.webmanifest" />
+  <link rel="stylesheet" href="/assets/css/style.css" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "LasArmas",
+    "url": "https://lasarmas.net/",
+    "logo": "https://lasarmas.net/assets/img/logo1.webp",
+    "sameAs": []
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "url": "https://lasarmas.net/",
+    "name": "LasArmas",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://lasarmas.net/search?q={query}",
+      "query-input": "required name=query"
+    }
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [{
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://lasarmas.net/"
+    },{
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Games",
+      "item": "https://lasarmas.net/games/"
+    }]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "VideoGame",
+    "name": "Lily Abel's Footprints",
+    "description": "巡る足跡をたどる旅。",
+    "gamePlatform": [ "PC" ],
+    "image": "https://lasarmas.net/assets/img/riri.webp",
+    "publisher": {
+        "@type": "Organization",
+        "name": "LasArmas"
+    },
+    "genre": "Adventure"
+  }
+  </script>
+  <style>
+    .page-header { margin-bottom: var(--space-4); }
+    .breadcrumbs ol { display: flex; flex-wrap: wrap; list-style: none; margin: 0; padding: 0; font-size: 0.9rem; }
+    .breadcrumbs li:not(:last-child)::after { content: '>'; margin: 0 .5em; color: var(--muted); }
+    .breadcrumbs a { color: var(--acc); }
+    .breadcrumbs span { color: var(--ink); }
+  </style>
+</head>
+<body>
+  <div id="header"></div>
+
+  <main id="main" class="article stack-layout">
+    <header class="page-header">
+      <nav aria-label="パンくずリスト">
+        <ol class="breadcrumbs">
+          <li><a href="/">Home</a></li>
+          <li><span>Games</span></li>
+        </ol>
+      </nav>
+    </header>
+
+    <section class="hero-new" style="height: 60vh; min-height: 400px; background-color: #111;">
+      <div class="hero-video-wrapper">
+        <video
+          src="/assets/video/LasArmas_ロゴモーション.webm"
+          autoplay loop muted playsinline
+          preload="auto"
+          width="1920" height="1080"
+          class="hero-video"
+        ></video>
+        <div class="hero-overlay" style="background: rgba(0,0,0,0.7); pointer-events: none;"></div>
+      </div>
+      <div class="hero-content">
+        <h1 style="font-size: clamp(2rem, 5vw, 3.5rem); margin-bottom: 0.25em;">遊べ、創れ、超えていけ。</h1>
+        <p class="hero-copy" style="font-size: 1.25rem;">次の世界は、ここから始まる。</p>
+      </div>
+    </section>
+
+    <!-- 最新開発ログ -->
+    <section>
+        <h2>最新開発ログ</h2>
+        <div class="cards">
+            <article class="card">
+                <h3>UIデザインの改善</h3>
+                <p>新しいインベントリ画面のプロトタイプを公開しました。</p>
+                <a href="#" class="btn">続きを読む</a>
+            </article>
+            <article class="card">
+                <h3>敵AIの行動パターン</h3>
+                <p>より賢く、手強い敵AIのロジックについて解説します。</p>
+                <a href="#" class="btn">続きを読む</a>
+            </article>
+            <article class="card">
+                <h3>環境音の実装</h3>
+                <p>没入感を高めるためのサウンドデザインの裏側。</p>
+                <a href="#" class="btn">続きを読む</a>
+            </article>
+        </div>
+    </section>
+
+    <!-- カード一覧 -->
+    <section>
+        <h2>コンテンツ</h2>
+        <div class="cards">
+            <article class="card">
+                <img src="/assets/img/riri.webp" alt="Lily Abel’s Footprints" loading="lazy" style="aspect-ratio: 16/9; object-fit: cover; border-radius: 8px; margin-bottom: 1em;">
+                <h3>開発中タイトル</h3>
+                <p>現在開発中の「Lily Abel’s Footprints」の詳細情報はこちら。</p>
+                <a href="#" class="btn">詳細を見る</a>
+            </article>
+            <article class="card">
+                <img src="/assets/img/LeyesFisicas.webp" alt="開発ブログ" loading="lazy" style="aspect-ratio: 16/9; object-fit: cover; border-radius: 8px; margin-bottom: 1em;">
+                <h3>Dev Blog</h3>
+                <p>UI/AI/サウンドなど、開発の裏側をカテゴリ別に紹介しています。</p>
+                <a href="/info/lab/" class="btn">ブログ一覧へ</a>
+            </article>
+            <article class="card">
+                <img src="/assets/img/MachosLife.webp" alt="ダウンロード" loading="lazy" style="aspect-ratio: 16/9; object-fit: cover; border-radius: 8px; margin-bottom: 1em;">
+                <h3>ダウンロード/デモ</h3>
+                <p>体験版や関連アセットを配布しています。</p>
+                <a href="#" class="btn">ダウンロードページへ</a>
+            </article>
+        </div>
+    </section>
+
+  </main>
+
+  <div id="footer"></div>
+  <script src="/assets/js/main.js"></script>
+</body>
+</html>

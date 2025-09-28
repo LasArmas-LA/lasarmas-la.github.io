@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>LasArmas Lab - ちょっと役立つ、すぐ役立つ。</title>
+  <meta name="description" content="メモ、検証、チップスの置き場。LasArmasのメンバーが日々書き留めている、ちょっとした小ワザや検証記録、雑記などを公開します。" />
+  <link rel="canonical" href="https://lasarmas.net/info/lab/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="LasArmas Lab" />
+  <meta property="og:description" content="LA Lab — ちょっと役立つ、すぐ役立つ。メモ、検証、チップスの置き場。" />
+  <meta property="og:url" content="https://lasarmas.net/info/lab/" />
+  <meta property="og:image" content="https://lasarmas.net/og/info-lab.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="LasArmas Lab" />
+  <meta name="twitter:description" content="LA Lab — ちょっと役立つ、すぐ役立つ。メモ、検証、チップスの置き場。" />
+  <meta name="twitter:image" content="https://lasarmas.net/og/info-lab.png" />
+  <link rel="manifest" href="/manifest.webmanifest" />
+  <link rel="stylesheet" href="/assets/css/style.css" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [{
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://lasarmas.net/"
+    },{
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Info",
+      "item": "https://lasarmas.net/info/"
+    },{
+      "@type": "ListItem",
+      "position": 3,
+      "name": "Lab",
+      "item": "https://lasarmas.net/info/lab/"
+    }]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": "https://lasarmas.net/info/lab/css-trick"
+    },
+    "headline": "CSSだけで作るちょっとオシャレなツールチップ",
+    "author": {
+      "@type": "Organization",
+      "name": "LasArmas"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "LasArmas",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://lasarmas.net/assets/img/logo1.webp"
+      }
+    },
+    "datePublished": "2025-09-20",
+    "articleBody": "::before と ::after 疑似要素、そして data-* 属性を組み合わせることで、JavaScriptを使わずに軽量なツールチップを実装する方法を紹介します。"
+  }
+  </script>
+  <style>
+    .page-header { margin-bottom: var(--space-4); }
+    .breadcrumbs ol { display: flex; flex-wrap: wrap; list-style: none; margin: 0; padding: 0; font-size: 0.9rem; }
+    .breadcrumbs li:not(:last-child)::after { content: '>'; margin: 0 .5em; color: var(--muted); }
+    .breadcrumbs a { color: var(--acc); }
+    .breadcrumbs span { color: var(--ink); }
+
+    .hero-light {
+      text-align: center;
+      padding: clamp(var(--space-5), 8vw, var(--space-7)) var(--space-4);
+      background-color: var(--surface);
+      border-radius: var(--radius);
+    }
+    .hero-light h1 { font-size: clamp(2rem, 5vw, 3rem); line-height: 1.2; margin: 0 0 0.25em; }
+    .hero-light p { font-size: 1.125rem; color: var(--muted); margin: 0 0 1.5em; }
+
+    .category-nav { display: flex; gap: var(--space-3); justify-content: center; flex-wrap: wrap; margin-bottom: var(--space-5); }
+  </style>
+</head>
+<body>
+  <div id="header"></div>
+
+  <main id="main" class="article stack-layout">
+    <header class="page-header">
+      <nav aria-label="パンくずリスト">
+        <ol class="breadcrumbs">
+          <li><a href="/">Home</a></li>
+          <li><a href="/info">Info</a></li>
+          <li><span>Lab</span></li>
+        </ol>
+      </nav>
+    </header>
+
+    <section class="hero-light">
+        <h1>LA Lab — ちょっと役立つ、すぐ役立つ。</h1>
+        <p>メモ、検証、チップスの置き場。</p>
+    </section>
+
+    <!-- カテゴリ -->
+    <section>
+        <nav class="category-nav">
+          <a href="#" class="btn btn-secondary">小ワザ</a>
+          <a href="#" class="btn btn-secondary">検証ノート</a>
+          <a href="#" class="btn btn-secondary">雑記</a>
+        </nav>
+    </section>
+
+    <!-- カード一覧 -->
+    <section>
+        <h2>最近の投稿</h2>
+        <div class="cards">
+            <article class="card">
+                <h3>CSS小ワザ：Gridレイアウトで高さを揃える簡単な方法</h3>
+                <p>`grid-auto-rows: 1fr` を使わずに、特定のアイテムだけ高さを揃えたい時のテクニック。</p>
+                <a href="#" class="btn">記事を読む</a>
+            </article>
+            <article class="card">
+                <h3>検証ノート：WebPとAVIF、画質とファイルサイズの最適バランスは？</h3>
+                <p>同じ画像を異なる品質でエンコードし、実際の表示品質と容量を比較してみました。</p>
+                <a href="#" class="btn">記事を読む</a>
+            </article>
+            <article class="card">
+                <h3>雑記：最近買ってよかったもの - 2025年秋</h3>
+                <p>生産性を高めてくれたガジェットや、生活が豊かになったアイテムなど。</p>
+                <a href="#" class="btn">記事を読む</a>
+            </article>
+        </div>
+    </section>
+
+  </main>
+
+  <div id="footer"></div>
+  <script src="/assets/js/main.js"></script>
+</body>
+</html>
