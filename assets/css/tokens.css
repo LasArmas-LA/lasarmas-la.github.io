@@ -1,0 +1,39 @@
+:root {
+  /* neutrals */
+  --bg:        #0b0b0e;  /* ほぼ黒（紺味ゼロ） */
+  --bg-2:      #111217;
+  --surface:   #14161c;
+  --ink:       #e9eef6;  /* 本文 */
+  --muted:     #a7b0c2;
+  --border:    #232936;
+
+  /* brand */
+  --brand:     #D12B2B;  /* LasArmasレッド */
+  --brand-700: #A41F1F;
+  --brand-300: #FF6B6B;
+
+  /* accent（リンク） */
+  --acc:       #7cc4ff;
+
+  /* layout */
+  --radius: 16px;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --max: 1100px;
+  --pad: 16px;
+}
+
+/* ライトテーマ */
+:root[data-theme="light"]{
+  --bg: #ffffff;
+  --bg-2: #f7f9fc;
+  --surface: #ffffff;
+  --ink: #0b0d12;
+  --muted: #5a6477;
+  --border: #e7e9f0;
+  --acc: #0067c0;
+}

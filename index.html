@@ -1,14 +1,14 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="ja">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>LasArmas Hub</title>
-  <meta name="description" content="私たちの活動を3つのカテゴリで公開しています。" />
+  <title>LasArmas Hub - ゲーム開発チーム</title>
+  <meta name="description" content="LasArmasは、心に残る体験を創り出すゲーム開発チームです。最新のゲーム、開発ブログ、技術資料などを公開しています。" />
   <link rel="canonical" href="https://lasarmas-la.github.io/" />
   <meta property="og:type" content="website" />
-  <meta property="og:title" content="LasArmas Hub" />
-  <meta property="og:description" content="私たちの活動を3つのカテゴリで公開しています。" />
+  <meta property="og:title" content="LasArmas Hub - ゲーム開発チーム" />
+  <meta property="og:description" content="LasArmasは、心に残る体験を創り出すゲーム開発チームです。最新のゲーム、開発ブログ、技術資料などを公開しています。" />
   <meta property="og:url" content="https://lasarmas-la.github.io/" />
   <meta property="og:image" content="https://lasarmas-la.github.io/assets/img/og.webp" />
   <meta name="twitter:card" content="summary_large_image" />
@@ -16,7 +16,6 @@
   <meta name="twitter:description" content="私たちの活動を3つのカテゴリで公開しています。" />
   <meta name="twitter:image" content="https://lasarmas-la.github.io/assets/img/og.webp" />
   <link rel="manifest" href="/manifest.webmanifest" />
-  <link rel="preload" as="image" href="/assets/img/logo1.webp" />
   <link rel="stylesheet" href="/assets/css/style.css" />
   <script type="application/ld+json">
   {
@@ -31,43 +30,97 @@
 <body>
   <div id="header"></div>
 
-  <main id="main" class="article stack-24">
-    <section class="hero">
-      <img
-        src="/assets/img/logo1.webp"
-        alt="LasArmasの象徴的なロゴ"
-        loading="eager"
-        width="1600"
-        height="900"
-        srcset="/assets/img/logo1-640.webp 640w, /assets/img/logo1-960.webp 960w, /assets/img/logo1.webp 1600w"
-        sizes="(max-width: 767px) 92vw, (max-width: 1100px) 90vw, 1100px"
-      >
-      <div class="hero-text">
-        <h1>LasArmas Hub</h1>
-        <p>私たちの活動を3つのカテゴリで公開しています。</p>
+  <main id="main" class="stack-layout">
+    <section class="hero-new">
+      <div class="hero-video-wrapper">
+        <video
+          src="/assets/video/LasArmas_ロゴモーション.webm"
+          autoplay loop muted playsinline
+          preload="metadata"
+          width="1920" height="1080"
+          class="hero-video"
+        ></video>
+        <div class="hero-overlay"></div>
+      </div>
+      <div class="hero-content">
+        <div class="hero-logo">
+          <img src="/assets/img/logo.webp" alt="LasArmas" width="400" height="100" />
+        </div>
+        <p class="hero-copy">私たちは、心に残る体験を創り出すゲーム開発チームです。</p>
+        <div class="hero-cta-group">
+          <a href="/games/" class="btn btn-primary">Gamesへ</a>
+          <a href="/about.html" class="btn btn-secondary">私たちについて</a>
+        </div>
       </div>
     </section>
 
-    <section class="cards">
-      <article class="card">
-        <h2>Games</h2>
-        <p>開発中・公開中のゲーム紹介。</p>
-        <a href="/games/game_index.html" class="btn">ゲームへ</a>
-      </article>
-      <article class="card">
-        <h2>Blog</h2>
-        <p>企画メモや開発記を公開。</p>
-        <a href="/blog/blog_index.html" class="btn">ブログへ</a>
-      </article>
-      <article class="card">
-        <h2>Present</h2>
-        <p>まとめ資料やスライド。</p>
-        <a href="/present/present_index.html" class="btn">プレゼンへ</a>
-      </article>
+    <div class="alternating-sections">
+      <section class="panel">
+        <div class="panel-media">
+          <img src="/assets/img/MachosLife.webp" alt="ゲーム「マッチョズライフ」のキーアート" width="1280" height="720" loading="lazy">
+        </div>
+        <div class="panel-text">
+          <h2>Games</h2>
+          <p>私たちが情熱を注いで開発したゲームの数々。世界観、ストーリー、そして開発の裏側まで、その魅力のすべてをご紹介します。</p>
+          <a href="/games/" class="btn">もっと見る</a>
+        </div>
+      </section>
+
+      <section class="panel panel-reverse">
+        <div class="panel-media">
+          <img src="/assets/img/riri.webp" alt="開発ブログのイメージ画像" width="1280" height="720" loading="lazy">
+        </div>
+        <div class="panel-text">
+          <h2>Blog</h2>
+          <p>ゲームデザインの哲学から、プログラミングのTIPS、アート制作の試行錯誤まで。私たちの「作る」の現場から生の声を届けます。</p>
+          <a href="/blog/" class="btn">もっと見る</a>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-media">
+            <img src="/assets/img/LeyesFisicas.webp" alt="プレゼンテーション資料のイメージ画像" width="1280" height="720" loading="lazy">
+        </div>
+        <div class="panel-text">
+            <h2>Present</h2>
+            <p>技術カンファレンスでの登壇資料や、社内勉強会で使われたスライドなどを公開。私たちの知見が、誰かの学びに繋がることを願って。</p>
+            <a href="/present/" class="btn">もっと見る</a>
+        </div>
+      </section>
+
+      <section class="panel panel-reverse">
+        <div class="panel-media">
+            <img src="/assets/img/footer-banner.webp" alt="チームメンバーの写真" width="1280" height="720" loading="lazy">
+        </div>
+        <div class="panel-text">
+            <h2>About</h2>
+            <p>どんなチームが、どんな想いでゲームを作っているのか。LasArmasのビジョン、メンバー、そして私たちの文化についてお話します。</p>
+            <a href="/about.html" class="btn">もっと見る</a>
+        </div>
+      </section>
+    </div>
+
+    <section class="trust-elements">
+        <h2>信頼と実績</h2>
+        <div class="cards">
+            <div class="card">
+                <h3>受賞歴</h3>
+                <p>Indie Game Contest 2024 大賞</p>
+            </div>
+            <div class="card">
+                <h3>ユーザー数</h3>
+                <p>シリーズ累計 100万人突破</p>
+            </div>
+            <div class="card">
+                <h3>メディア掲載</h3>
+                <p>Game Dev Magazine 特集記事</p>
+            </div>
+        </div>
     </section>
+
   </main>
 
   <div id="footer"></div>
-  <script src="/assets/js/main.js" data-v="20250914"></script>
+  <script src="/assets/js/main.js" data-v="20250927"></script>
 </body>
 </html>
